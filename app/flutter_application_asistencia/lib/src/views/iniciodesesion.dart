@@ -1,159 +1,54 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
-
-  final String title;
-
+class LoginPage extends StatelessWidget {
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 40),
 
-class _LoginPageState extends State<LoginPage> {
-    final TextEditingController controllerUsuario = TextEditingController();
-    final TextEditingController controllerPassword = TextEditingController();
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Usuario:',
+                ),
+              ),
+            ),
 
+            SizedBox(height: 16),
 
-@override
-void dispose() {
-  controllerUsuario.dispose();
-  controllerPassword.dispose();
-  super.dispose();
-}
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña:',
+                ),
+              ),
+            ),
 
-  @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.black, // Fondo negro
-    appBar: AppBar(
-      backgroundColor: Colors.black,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(
-          Icons.settings,
-          color: Colors.purple, // Ícono morado
-        ),
-        onPressed: () {
-          // Aquí puedes navegar a Configuración u otra pantalla
-        },
-      ),
-    ),
-    body: Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50),
-        child: columna(),
-      ),
-    ),
-  );
-}
+            SizedBox(height: 24),
 
+            ElevatedButton(
+              onPressed: () {},
+              child: Text('Ingresar'),
+            ),
 
-  Widget columna() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        divisor(80),
-        logo(),
-        divisor(40),
-        txtUsuario(),
-        divisor(10),
-        divisor(10),
-        txtPassword(),
-        const SizedBox(height: 50),
-        botonIngresar(),
-      ],
-    );
-  }
+            Spacer(),
 
-
-  Widget logo() {
-    return Image.asset(
-      'assets/logos/apple-touch-icon.png',
-      height: 100,
-      fit: BoxFit.contain,
-    );
-  }
-
-
-
-  Widget txtUsuario() {
-  return TextFormField(
-    controller: controllerUsuario,
-    style: const TextStyle(color: Colors.white), // Texto ingresado en blanco
-    cursorColor: Colors.white, // Cursor blanco
-    decoration: InputDecoration(
-      labelText: 'Usuario',
-      labelStyle: const TextStyle(color: Colors.white), // Etiqueta en blanco
-      prefixIcon: const Icon(
-        Icons.person, // Ícono nativo
-        color: Colors.white,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white),
-      ),
-    ),
-    keyboardType: TextInputType.emailAddress,
-    textInputAction: TextInputAction.next,
-    autocorrect: false,
-  );
-}
-
-
-
-  Widget txtPassword() {
-  return TextFormField(
-    controller: controllerPassword,
-    style: const TextStyle(color: Colors.white), // Texto ingresado en blanco
-    obscureText: true,
-    decoration: InputDecoration(
-      labelText: 'Contraseña',
-      labelStyle: const TextStyle(color: Colors.white), // Etiqueta en blanco
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white), // Borde cuando no está enfocado
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white), // Borde cuando está enfocado
-      ),
-      prefixIcon: const Icon(
-        Icons.lock,
-        color: Colors.white, // Ícono en blanco si lo quieres
-      ),
-    ),
-  );
-}
-
-
-  Widget divisor(double altura) {
-  return SizedBox(height: altura);
-}
-
-  Widget botonIngresar() {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromARGB(255, 163, 95, 95),
-      minimumSize: const Size(double.infinity, 50),
-),
-      child: const Text(
-        'Ingresar',
-        style: TextStyle(
-          color: Color.fromARGB(255, 255, 255, 255),
-          fontWeight: FontWeight.bold,
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(8),
+              child: Center(
+                child: Text('Copyright © 2025 | Versión 1.9.9.2 - 8/5/2025'),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  Widget copyright() {
-    return const Text(" copyright"
-    );
-  }
-
 }
