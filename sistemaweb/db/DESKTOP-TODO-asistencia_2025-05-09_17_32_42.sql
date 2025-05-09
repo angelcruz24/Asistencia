@@ -56,7 +56,7 @@ CREATE TABLE `usuariosweb` (
 DROP TABLE IF EXISTS `asistencialistado`;
 
 DROP VIEW IF EXISTS `asistencialistado`;
-CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
+CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT   `asistencia`.`id` AS `id`,  `usuariosapp`.`id` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
 
 
 ALTER TABLE `asistencia`
