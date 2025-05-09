@@ -2,10 +2,12 @@
     include 'db.php';
 
     $id = $_POST['id'];
-    $name = $_POST['name'];
+    $nombre = $_POST['nombre'];
+    $clave = $_POST['clave'];
+    $estatus = $_POST['estatus'];
 
 
-    $sql = "UPDATE usuariosapp SET name='$name' WHERE id=$id";
+    $sql = "UPDATE usuariosapp SET nombre='$nombre', clave='$clave', estatus='$estatus' WHERE id=$id";
 
     if ($conn->query($sql)) {
         echo json_encode(["success" => true]);
