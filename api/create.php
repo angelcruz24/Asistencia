@@ -1,5 +1,5 @@
 <?php
-    include 'db.php';
+    include 'conexion.php';
 
     $nombre = $_POST['nombre'];
     $clave = $_POST['clave'];

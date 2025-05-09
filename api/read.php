@@ -1,5 +1,5 @@
 <?php
-    include 'db.php';
+    include 'conexion.php';
 
     $sql = "SELECT * FROM usuariosapp";
     $result = $conn->query($sql);
