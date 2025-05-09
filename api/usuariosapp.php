@@ -5,6 +5,30 @@ include "conexion.php";
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
+    case 'LOGIN':
+        $data = json_decode(file_get_contents("php://input"), true);
+        // se verifica que exista el usuario:
+        if (isset($data['nombre']) && isset($data['clave'])) {
+            $nombre = $conn->real_escape_string($data['nombre']);
+            $clave = $conn->real_escape_string($data['clave']);
+
+            $sql = "SELECT id FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave'";
+            $result = $conn->query($sql);
+
+            //aqui tienes que verificar si el id>0, si es mayor a 0 entonces muestras el mensaje credenciales correcas, sino credenciales incorrectas
+            if ($result->num_rows > 0) {
+
+                echo json_encode(['success' => true, 'message' => 'Credenciales correctas']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
+            }
+            $conn->close();
+            // exit(); // Evita que siga al INSERT
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se introdujeron datos de acceso']);
+        }
+        break;
+
     case 'GET':
         $result = $conn->query("SELECT * FROM usuariosapp");
         $usuarios = [];
@@ -39,11 +63,11 @@ switch ($method) {
         // $sql = "INSERT INTO usuariosapp (nombre, clave, estatus) VALUES ('$nombre', '$clave', $estatus)";
         // if ($conn->query($sql)) {
         //     echo json_encode(['message' => 'Usuario creado']);
-        // } else {
+        //else {
         //     http_response_code(500);
         //     echo json_encode(['error' => $conn->error]);
-        // }
-        // break;
+        //}
+        break;
 
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"), true);
@@ -80,4 +104,3 @@ switch ($method) {
 }
 
 $conn->close();
-?>
