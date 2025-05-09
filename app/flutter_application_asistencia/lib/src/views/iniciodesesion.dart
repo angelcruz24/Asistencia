@@ -93,26 +93,37 @@ class _IniciodeSesion extends State<Login> {
   }
 
   Future<void> verificarLogin() async {
-    final url = Uri.parse("http://10.0.0.2/Asistencia/api/usuariosapp.php");
+    final url = Uri.parse("http://127.0.0.1/Asistencia/api/usuariosapp.php?accion=login"); // Cambiar por la IP correcta si es necesario
 
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: json.encode({
-        'nombre': controllerUsuario.text.trim(),
-        'clave': controllerPassword.text.trim(),
-        'prueba': true
-      }),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          'nombre': controllerUsuario.text.trim(),
+          'clave': controllerPassword.text.trim(),
+        }),
+      );
 
-    final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        // Si la solicitud fue exitosa
+        final data = json.decode(response.body);
 
-    if (data['success']) {
-      showMessage(data['message']); // "Credenciales correctas"
-    } else {
-      showMessage(data['message']); // "Credenciales incorrectas"
+        if (data['success']) {
+          showMessage(data['message']); // "Credenciales correctas"
+        } else {
+          showMessage(data['message']); // "Credenciales incorrectas"
+        }
+      } else {
+        // Si la solicitud no fue exitosa, muestra un error
+        showMessage('Error en la solicitud: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Si hay un error en la conexión o en el formato de la solicitud
+      showMessage('Error al conectarse al servidor: $e');
     }
   }
+
 
 
   Widget botonIngresar() {

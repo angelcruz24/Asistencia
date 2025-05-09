@@ -1,30 +1,45 @@
 <?php
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");  // Permite solicitudes desde cualquier origen
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+// Si la solicitud es OPTIONS, solo responde con 200 (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 include "conexion.php";
 
-$method = $_SERVER['REQUEST_METHOD'];
+$accion = $_SERVER['REQUEST_METHOD'];
 
-switch ($method) {
-    case 'LOGIN':
+switch ($accion) {
+    case 'POST':  // Esta es la acción para login
         $data = json_decode(file_get_contents("php://input"), true);
-        // se verifica que exista el usuario:
+
+        // Verifica si el usuario y la clave están definidos
         if (isset($data['nombre']) && isset($data['clave'])) {
             $nombre = $conn->real_escape_string($data['nombre']);
             $clave = $conn->real_escape_string($data['clave']);
 
-            $sql = "SELECT id FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave'";
+            // Consulta para verificar si las credenciales coinciden
+            $sql = "SELECT id FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave' AND estatus='1'";
             $result = $conn->query($sql);
 
-            //aqui tienes que verificar si el id>0, si es mayor a 0 entonces muestras el mensaje credenciales correcas, sino credenciales incorrectas
-            if ($result->num_rows > 0) {
-
-                echo json_encode(['success' => true, 'message' => 'Credenciales correctas']);
+            // Verifica si se encontró un resultado
+            if ($result && $result->num_rows > 0) {
+                // Si hay coincidencia, devuelve un mensaje de éxito
+                $usuario = $result->fetch_assoc();
+                echo json_encode(['success' => true, 'message' => 'Credenciales correctas', 'id' => $usuario['id']]);
             } else {
+                // Si no hay coincidencia, devuelve un mensaje de error
                 echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
             }
+
             $conn->close();
-            // exit(); // Evita que siga al INSERT
         } else {
+            // Si no se enviaron datos, retorna un error
             echo json_encode(['success' => false, 'message' => 'No se introdujeron datos de acceso']);
         }
         break;
@@ -36,37 +51,6 @@ switch ($method) {
             $usuarios[] = $row;
         }
         echo json_encode($usuarios);
-        break;
-
-    case 'POST':
-        $data = json_decode(file_get_contents("php://input"), true);
-        // Si es solo una prueba de login:
-        if (isset($data['nombre']) && isset($data['clave']) && isset($data['prueba']) && $data['prueba'] == true) {
-            $nombre = $conn->real_escape_string($data['nombre']);
-            $clave = $conn->real_escape_string($data['clave']);
-
-            $sql = "SELECT * FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave'";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                echo json_encode(['success' => true, 'message' => 'Credenciales correctas']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
-            }
-            $conn->close();
-            // exit(); // Evita que siga al INSERT
-        }
-        // $nombre = $conn->real_escape_string($data['nombre']);
-        // $clave = $conn->real_escape_string($data['clave']);
-        // $estatus = isset($data['estatus']) ? intval($data['estatus']) : 1;
-
-        // $sql = "INSERT INTO usuariosapp (nombre, clave, estatus) VALUES ('$nombre', '$clave', $estatus)";
-        // if ($conn->query($sql)) {
-        //     echo json_encode(['message' => 'Usuario creado']);
-        //else {
-        //     http_response_code(500);
-        //     echo json_encode(['error' => $conn->error]);
-        //}
         break;
 
     case 'PUT':
@@ -104,3 +88,4 @@ switch ($method) {
 }
 
 $conn->close();
+?>
