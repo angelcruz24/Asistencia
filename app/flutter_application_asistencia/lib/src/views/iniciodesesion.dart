@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   const Login({super.key, required this.title});
@@ -90,14 +92,42 @@ class _IniciodeSesion extends State<Login> {
     );
   }
 
+  Future<void> verificarLogin() async {
+    final url = Uri.parse("http://10.0.0.2/Asistencia/api/usuariosapp.php");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({
+        'nombre': controllerUsuario.text.trim(),
+        'clave': controllerPassword.text.trim(),
+        'prueba': true
+      }),
+    );
+
+    final data = json.decode(response.body);
+
+    if (data['success']) {
+      showMessage(data['message']); // "Credenciales correctas"
+    } else {
+      showMessage(data['message']); // "Credenciales incorrectas"
+    }
+  }
+
+
   Widget botonIngresar() {
     return ElevatedButton(
-      onPressed: () {
-        // lógica para ingresar
-      },
+      onPressed: verificarLogin,
       child: const Text('Ingresar'),
     );
   }
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
 
   Widget logo() {
     return Image.asset(
