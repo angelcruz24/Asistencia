@@ -7,6 +7,13 @@ START TRANSACTION;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+CREATE TABLE `usuariosapp` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `clave` varchar(250) DEFAULT NULL,
+  `estatus` int(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+DROP TABLE IF EXISTS `asistencialistado`;
 
 CREATE TABLE `asistencia` (
   `id` int(11) NOT NULL,
@@ -21,30 +28,6 @@ CREATE TABLE `asistencia` (
   `macsalida` varchar(45) DEFAULT NULL,
   `actividades` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-CREATE TABLE `asistencialistado` (
-`id` int(11)
-,`idusuario` int(11)
-,`usuario` varchar(50)
-,`fechaentrada` date
-,`entrada` time
-,`ipentrada` varchar(45)
-,`macentrada` varchar(45)
-,`fechasalida` date
-,`salida` time
-,`ipsalida` varchar(45)
-,`macsalida` varchar(45)
-,`actividades` varchar(250)
-);
-
-CREATE TABLE `usuariosapp` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(50) DEFAULT NULL,
-  `clave` varchar(250) DEFAULT NULL,
-  `estatus` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-DROP TABLE IF EXISTS `asistencialistado`;
-
-CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
 
 
 ALTER TABLE `asistencia`
@@ -67,6 +50,10 @@ ALTER TABLE `usuariosapp`
 
 ALTER TABLE `asistencia`
   ADD CONSTRAINT `usuarioid1` FOREIGN KEY (`usuario`) REFERENCES `usuariosapp` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
+
+
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
