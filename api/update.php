@@ -4,10 +4,9 @@
     $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $clave = $_POST['clave'];
-    $estatus = $_POST['estatus'];
 
 
-    $sql = "UPDATE usuariosapp SET nombre='$nombre', clave='$clave', estatus='$estatus' WHERE id=$id";
+    $sql = "UPDATE usuariosapp SET nombre='$nombre', clave='$clave' WHERE id=$id";
 
     if ($conn->query($sql)) {
         echo json_encode(["success" => true]);
