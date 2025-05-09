@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/src/temas/colorBotones.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -127,10 +128,9 @@ class _IniciodeSesion extends State<Login> {
 
 
   Widget botonIngresar() {
-    return ElevatedButton(
-      onPressed: verificarLogin,
-      child: const Text('Ingresar'),
-    );
+    return EstilosDeBotones.btnSecondary(
+      'Ingresar', () {
+    });
   }
 
   void showMessage(String message) {
