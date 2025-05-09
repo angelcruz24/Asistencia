@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-class EstilosDeBotones {
-
+class Estilosbotones {
   //Boton normal
 
-  static Widget btnDefault(String text, VoidCallback onPressed) {
+  static Widget btndefault(String text, VoidCallback onPressed) {
     return TextButton(
       onPressed: onPressed,
       child: Text(text),
@@ -13,7 +12,7 @@ class EstilosDeBotones {
 
   //Boton 1
 
-  static Widget btnPrimary(String text, VoidCallback onPressed) {
+  static Widget btnprimary(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
@@ -26,7 +25,7 @@ class EstilosDeBotones {
 
 //Boton 2
 
-  static Widget btnSecondary(String text, VoidCallback onPressed) {
+  static Widget btnsecondary(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey,
@@ -39,7 +38,7 @@ class EstilosDeBotones {
 
   //Boton 3
 
-  static Widget btnSucces(String text, VoidCallback onPressed) {
+  static Widget btnsuccess(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.green,
@@ -52,7 +51,7 @@ class EstilosDeBotones {
 
   //Boton 4
 
-  static Widget btnInfo(String text, VoidCallback onPressed) {
+  static Widget btninfo(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.lightBlue,
@@ -65,7 +64,7 @@ class EstilosDeBotones {
 
   //Boton 5
 
-  static Widget btnDanger(String text, VoidCallback onPressed) {
+  static Widget btndanger(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
@@ -78,7 +77,7 @@ class EstilosDeBotones {
 
   //Boton 6
 
-  static Widget btnWarning(String text, VoidCallback onPressed) {
+  static Widget btnwarning(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.yellow[700],
@@ -91,7 +90,7 @@ class EstilosDeBotones {
 
   //Boton 7
 
-  static Widget btnLight(String text, VoidCallback onPressed) {
+  static Widget btnlight(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
@@ -105,7 +104,7 @@ class EstilosDeBotones {
 
   //Boton 8
 
-  static Widget btnDark(String text, VoidCallback onPressed) {
+  static Widget btndark(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,

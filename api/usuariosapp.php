@@ -10,12 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-include "conexion.php";
+require_once "conexion.php";
 
-$accion = $_SERVER['REQUEST_METHOD'];
+$accion = $_GET['accion'];
 
 switch ($accion) {
-    case 'POST':  // Esta es la acción para login
+    case 'login':  // Esta es la acción para login
         $data = json_decode(file_get_contents("php://input"), true);
 
         // Verifica si el usuario y la clave están definidos
@@ -88,4 +88,3 @@ switch ($accion) {
 }
 
 $conn->close();
-?>

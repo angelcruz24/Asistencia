@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Login(title: 'Asistencias',), // Esta es tu pantalla de login
+      home: const Login(
+        title: 'Asistencias',
+      ), // Esta es tu pantalla de login
     );
   }
 }
