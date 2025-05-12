@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/entrada.dart'; 
+import 'package:flutter_application_asistencia/src/views/entrada.dart';
+import 'package:flutter_application_asistencia/src/views/login.dart';
+import 'package:flutter_application_asistencia/src/views/salida.dart'; 
 
-class Bienvenido extends StatelessWidget {
-  const Bienvenido({super.key});
+class Escritorio extends StatelessWidget {
+  const Escritorio({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +53,19 @@ class Bienvenido extends StatelessWidget {
 
               // Botón REGISTRAR SALIDA
               Estilosbotones.btnwarning("REGISTRAR SALIDA", () {
-                // Acción para registrar salida
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Salida()),
+                );// Acción para registrar salida
               }),
               const SizedBox(height: 20),
 
               // Botón SALIR DE LA APP
               Estilosbotones.btnlight("SALIR DE LA APP", () {
-                // Acción para salir de la app
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                ); // Acción para salir de la app
               }),
             ],
           ),

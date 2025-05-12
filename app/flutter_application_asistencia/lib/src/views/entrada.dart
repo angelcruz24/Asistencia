@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/home.dart';
+import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 
 class Entrada extends StatelessWidget {
@@ -42,7 +42,7 @@ class Entrada extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Bienvenido()),
+                      MaterialPageRoute(builder: (context) => const Escritorio()),
                     );
                   }),
                 ],

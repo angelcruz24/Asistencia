@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
+import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 class Salida extends StatelessWidget {
   const Salida({super.key});
@@ -8,10 +9,10 @@ class Salida extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  appBar: AppBar(
-    centerTitle: true, // Esto centra el título en Android y iOS
-    title: const Text("SALIDA"),
-  ),
+      appBar: AppBar(
+        centerTitle: true, // Esto centra el título en Android y iOS
+        title: const Text("SALIDA"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -33,7 +34,7 @@ class Salida extends StatelessWidget {
                   const SizedBox(height: 24),
                   botonsalida(),
                   const SizedBox(height: 16),
-                  botonregresar(),
+                  botonregresar(context),
                 ],
               ),
             ),
@@ -103,14 +104,19 @@ class Salida extends StatelessWidget {
   Widget botonsalida() {
     return Estilosbotones.btnsuccess(
       "REGISTRAR SALIDA",
-      () {},
+      () {}, // Asegúrate de tener esta clase creada
     );
   }
+}
 
-  Widget botonregresar() {
-    return Estilosbotones.btndanger(
-      "REGRESAR",
-       () {},
+Widget botonregresar(BuildContext context) {
+  return Estilosbotones.btndanger(
+  "REGRESAR",
+  () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Escritorio()),
     );
-  }
+  },
+);
 }
