@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 import 'package:http/http.dart' as http;
 
 class LoginController {
@@ -37,7 +38,10 @@ class LoginController {
         final data = json.decode(response.body);
 
         if (data['success']) {
-          mostrarmensaje(context, 'Login', data['message'], DialogType.success);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Escritorio()),
+          );
         } else {
           mostrarmensaje(context, 'Login', data['message'], DialogType.error);
         }
