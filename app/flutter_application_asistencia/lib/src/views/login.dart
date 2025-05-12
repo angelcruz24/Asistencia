@@ -6,8 +6,7 @@ import 'package:flutter_application_asistencia/src/views/configuracion.dart';
 
 
 class Login extends StatefulWidget {
-  const Login({super.key, required this.title});
-  final String title;
+  const Login({super.key,});
 
   @override
   State<Login> createState() => Iniciosesion();
@@ -27,6 +26,8 @@ class Iniciosesion extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         title: const Text('LOGIN'),
+         centerTitle: true,
   leading: Padding(
     padding: const EdgeInsets.only(left: 12),
     child: GestureDetector(
@@ -43,7 +44,6 @@ class Iniciosesion extends State<Login> {
       ),
     ),
   ),
-  title: Text(widget.title),
 ),
 
       body: Column(
@@ -104,7 +104,7 @@ class Iniciosesion extends State<Login> {
 
   Widget botoningresar() {
     return Estilosbotones.btnprimary(
-        'Ingresar', () => _loginController.verificarlogin(context));
+        'INGRESAR', () => _loginController.verificarlogin(context));
   }
 
   Widget logo() {

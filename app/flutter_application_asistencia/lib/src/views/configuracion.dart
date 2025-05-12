@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/iniciodesesion.dart';
+import 'package:flutter_application_asistencia/src/views/login.dart';
 
 class Configuracion extends StatelessWidget {
   const Configuracion({super.key});
@@ -27,7 +27,7 @@ class Configuracion extends StatelessWidget {
                   const SizedBox(height: 20),
                   resultadoconexion(),
                   const SizedBox(height: 20),
-                  botonregresar(context)
+                  botonregresar(context),
                 ],
               ),
             ),
@@ -59,7 +59,7 @@ class Configuracion extends StatelessWidget {
 
   Widget botonconexion() {
     return Estilosbotones.btnprimary(
-      "probar conxion",
+      "PROBAR CONEXION",
       () {},
     );
   }
@@ -69,7 +69,7 @@ class Configuracion extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const Text(
-        'Resultado de la Conexión',
+        'RESULTADO DE LA CONEXION',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       const SizedBox(height: 8),
@@ -91,11 +91,11 @@ class Configuracion extends StatelessWidget {
 
   Widget botonregresar(BuildContext context) {
   return Estilosbotones.btndanger(
-    "Regresar",
+    "REGRESAR",
     () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Login(title: 'Login')),
+        MaterialPageRoute(builder: (context) => const Login()),
       );
     },
   );

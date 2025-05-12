@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_application_asistencia/src/views/iniciodesesion.dart'; // Asegúrate que el nombre del archivo coincida
+import 'package:flutter_application_asistencia/src/views/login.dart'; // Asegúrate que el nombre del archivo coincida
 
 void main() {
   runApp(const MyApp());
@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Login(
-        title: 'Asistencias',
-      ), // Esta es tu pantalla de login
+      home: const Login(), // Esta es tu pantal)la de login
     );
   }
 }
