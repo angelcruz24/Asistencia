@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/Controllers/loginController.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
+import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
+import 'package:flutter_application_asistencia/src/views/configuracion.dart';
 
 
 class Login extends StatefulWidget {
@@ -25,16 +27,25 @@ class Iniciosesion extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Image.asset(
-            'assets/logos/fa-solid fa-gear.png',
-            height: 28,
-            width: 28,
-          ),
-        ),
-        title: Text(widget.title),
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12),
+    child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Configuracion()), // Asegúrate de tener esta clase creada
+        );
+      },
+      child: Image.asset(
+        'assets/logos/fa-solid fa-gear.png',
+        height: 28,
+        width: 28,
       ),
+    ),
+  ),
+  title: Text(widget.title),
+),
+
       body: Column(
         children: [
           Expanded(
@@ -54,7 +65,7 @@ class Iniciosesion extends State<Login> {
               ),
             ),
           ),
-          copyright(),
+          const Piedepagina(),
         ],
       ),
     );
@@ -101,16 +112,6 @@ class Iniciosesion extends State<Login> {
       'assets/logos/apple-touch-icon.png',
       height: 100,
       fit: BoxFit.contain,
-    );
-  }
-
-  Widget copyright() {
-    return const Padding(
-      padding: EdgeInsets.all(8),
-      child: Text(
-        "Copyright © 2025 SEISMEXICO | Versión 0.1.9.2 | 9/5/2025",
-        textAlign: TextAlign.center,
-      ),
     );
   }
 }
