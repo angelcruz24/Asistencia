@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
-
+import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
+import 'package:flutter_application_asistencia/src/views/entrada.dart'; 
 
 class Bienvenido extends StatelessWidget {
   const Bienvenido({super.key});
-  
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,6 @@ class Bienvenido extends StatelessWidget {
               ),
               const SizedBox(height: 30),
 
-              // Etiqueta USUARIO:
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -29,34 +28,34 @@ class Bienvenido extends StatelessWidget {
                   style: TextStyle(fontSize: 14),
                 ),
               ),
-
-              // Caja de texto (deshabilitada)
               const SizedBox(height: 5),
               const TextField(
                 enabled: false,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.grey,
+                  fillColor: Color.fromARGB(255, 255, 255, 255),
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 ),
               ),
-
               const SizedBox(height: 30),
 
-              // Botón Registrar Entrada (verde)
+              // Botón REGISTRAR ENTRADA
               Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () {
-                // Acción para registrar entrada
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Entrada()),
+                );
               }),
               const SizedBox(height: 20),
 
-              // Botón Registrar Salida (amarillo)
+              // Botón REGISTRAR SALIDA
               Estilosbotones.btnwarning("REGISTRAR SALIDA", () {
                 // Acción para registrar salida
               }),
               const SizedBox(height: 20),
 
-              // Botón Salir (blanco)
+              // Botón SALIR DE LA APP
               Estilosbotones.btnlight("SALIR DE LA APP", () {
                 // Acción para salir de la app
               }),
@@ -64,6 +63,8 @@ class Bienvenido extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const Piedepagina(),
     );
   }
 }
+
