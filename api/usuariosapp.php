@@ -37,7 +37,7 @@ switch ($accion) {
                 echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
             }
 
-            $conn->close();
+            //$conn->close();
         } else {
             // Si no se enviaron datos, retorna un error
             echo json_encode(['success' => false, 'message' => 'No se introdujeron datos de acceso']);
