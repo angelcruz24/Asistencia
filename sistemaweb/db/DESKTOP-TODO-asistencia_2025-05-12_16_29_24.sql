@@ -8,7 +8,6 @@ START TRANSACTION;
 /*!40101 SET NAMES utf8mb4 */;
 
 
-DROP TABLE IF EXISTS `asistencia`;
 CREATE TABLE `asistencia` (
   `id` int(11) NOT NULL,
   `usuario` int(11) DEFAULT NULL,
@@ -22,7 +21,6 @@ CREATE TABLE `asistencia` (
   `macsalida` varchar(45) DEFAULT NULL,
   `actividades` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-DROP VIEW IF EXISTS `asistencialistado`;
 CREATE TABLE `asistencialistado` (
 `id` int(11)
 ,`idusuario` int(11)
@@ -38,7 +36,6 @@ CREATE TABLE `asistencialistado` (
 ,`actividades` varchar(250)
 );
 
-DROP TABLE IF EXISTS `usuariosapp`;
 CREATE TABLE `usuariosapp` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -46,7 +43,9 @@ CREATE TABLE `usuariosapp` (
   `estatus` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
-DROP TABLE IF EXISTS `usuariosweb`;
+INSERT INTO `usuariosapp` (`id`, `nombre`, `clave`, `estatus`) VALUES
+(1, 'admin', '1234', 1);
+
 CREATE TABLE `usuariosweb` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -55,8 +54,7 @@ CREATE TABLE `usuariosweb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 DROP TABLE IF EXISTS `asistencialistado`;
 
-DROP VIEW IF EXISTS `asistencialistado`;
-CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT   `asistencia`.`id` AS `id`, `asistencia`.`usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
+CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `entrada` AS `entrada`, `ipentrada` AS `ipentrada`, `macentrada` AS `macentrada`, `fechasalida` AS `fechasalida`, `salida` AS `salida`, `ipsalida` AS `ipsalida`, `macsalida` AS `macsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
 
 
 ALTER TABLE `asistencia`
@@ -79,7 +77,7 @@ ALTER TABLE `asistencia`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `usuariosapp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `usuariosweb`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
