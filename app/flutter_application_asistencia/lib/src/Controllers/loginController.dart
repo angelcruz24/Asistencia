@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_application_asistencia/config.dart';
 import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,7 +23,7 @@ class LoginController {
     }
 
     final url = Uri.parse(
-        "http://localhost/Asistencia/api/usuariosapp.php?accion=login");
+        "${AppConfig.baseUrl}usuariosapp.php?accion=login");
 
     try {
       final response = await http.post(

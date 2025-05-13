@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class ConfiguracionController {
@@ -6,9 +7,35 @@ class ConfiguracionController {
   String protocolo = 'http';
   final ValueNotifier<String> mensajeConexion = ValueNotifier('');
 
+  ConfiguracionController() {
+    _cargarDireccionGuardada();
+  }
+
+  void _cargarDireccionGuardada() async {
+    final prefs = await SharedPreferences.getInstance();
+    final url = prefs.getString('base_url') ?? '';
+    if (url.startsWith('https://')) {
+      protocolo = 'https';
+      direccionController.text = url.replaceFirst('https://', '');
+    } else if (url.startsWith('http://')) {
+      protocolo = 'http';
+      direccionController.text = url.replaceFirst('http://', '');
+    }
+  }
+
+  Future<void> guardarDireccion() async {
+    final prefs = await SharedPreferences.getInstance();
+    String direccion = direccionController.text.trim();
+    if (!direccion.endsWith('/')) {
+      direccion += '/';
+    }
+    final url = '$protocolo://$direccion';
+    await prefs.setString('base_url', url);
+  }
+
   bool validarDireccion(String direccion) {
-    final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
-    final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
+    final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?\$');
+    final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?\$');
     return ipRegExp.hasMatch(direccion) || domainRegExp.hasMatch(direccion);
   }
 
@@ -28,6 +55,7 @@ class ConfiguracionController {
 
       if (response.statusCode == 200) {
         mensajeConexion.value = '✅ Conexión exitosa';
+        await guardarDireccion();
       } else {
         mensajeConexion.value = '⚠ Error: código ${response.statusCode}';
       }
