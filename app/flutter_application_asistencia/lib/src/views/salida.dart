@@ -7,11 +7,14 @@ import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 class Salida extends StatelessWidget {
   final SalidaController controller = SalidaController();
+  final String nombreUsuario;
 
-  Salida({super.key});
+  Salida({super.key, required this.nombreUsuario});
+
 
   @override
   Widget build(BuildContext context) {
+    final usuarioController = TextEditingController(text: nombreUsuario);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -24,7 +27,7 @@ class Salida extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  campoSoloLectura("Usuario", controller.usuarioController),
+                  campoSoloLectura("Usuario", usuarioController),
                   const SizedBox(height: 12),
                   campoSoloLectura("Fecha de salida", controller.fechaSalidaController),
                   const SizedBox(height: 12),
@@ -43,7 +46,7 @@ class Salida extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Escritorio()),
+                      MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: nombreUsuario)),
                     );
                   }),
                 ],

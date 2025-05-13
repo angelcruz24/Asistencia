@@ -5,7 +5,11 @@ import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 
 class Entrada extends StatelessWidget {
-  final TextEditingController usuarioController = TextEditingController(text: "Juan Pérez");
+  final String nombreUsuario;
+
+  Entrada({super.key, required this.nombreUsuario});
+
+  //final TextEditingController usuarioController = TextEditingController(text: "Juan Pérez");
   final TextEditingController fechaController = TextEditingController(text: "2025-05-12");
   final TextEditingController horaController = TextEditingController(text: "08:30 AM");
   final TextEditingController ipController = TextEditingController(text: "192.168.1.15");
@@ -13,6 +17,7 @@ class Entrada extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioController = TextEditingController(text: nombreUsuario);
     return Scaffold(
       appBar: AppBar(
         title: const Text('ENTRADA', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
@@ -42,7 +47,7 @@ class Entrada extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Escritorio()),
+                      MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: nombreUsuario)),
                     );
                   }),
                 ],

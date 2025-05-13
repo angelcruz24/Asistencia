@@ -40,7 +40,7 @@ class LoginController {
         if (data['success']) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Escritorio()),
+            MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: controllerUsuario.text.trim())),
           );
         } else {
           mostrarmensaje(context, 'Login', data['message'], DialogType.error);
