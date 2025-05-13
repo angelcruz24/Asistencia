@@ -1,9 +1,13 @@
 <?php
 
 $host = "localhost";
-$user = "asistencia";
+/*$user = "asistencia";
 $password = "asistencia2025";
-$db = "asistencia";
+$db = "asistencia";*/
+//para el servidor
+$user = "seismex1_asistencia";
+$password = "i5YOUQC7S%lVñ";
+$db = "seismex1_asistencia";
 
 $conn = new mysqli($host, $user, $password, $db);
 
