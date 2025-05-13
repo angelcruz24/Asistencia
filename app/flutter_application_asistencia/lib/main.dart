@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_asistencia/src/views/escritorio.dart';
+//import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 import 'package:flutter_application_asistencia/src/views/login.dart';
 //import 'package:flutter_application_asistencia/src/views/salida.dart'; // Asegúrate que el nombre del archivo coincida
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Escritorio(), // Esta es tu pantal)la de login
+      home: const Login(), // Esta es tu pantal)la de login
     );
   }
 }

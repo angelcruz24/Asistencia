@@ -1,16 +1,20 @@
+// lib/views/salida_view.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/src/Controllers/salidacontroller.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/views/escritorio.dart';
 
 class Salida extends StatelessWidget {
-  const Salida({super.key});
+  final SalidaController controller = SalidaController();
+
+  Salida({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true, // Esto centra el título en Android y iOS
+        centerTitle: true,
         title: const Text("SALIDA"),
       ),
       body: Padding(
@@ -20,21 +24,28 @@ class Salida extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  usuario(),
+                  campoSoloLectura("Usuario", controller.usuarioController),
                   const SizedBox(height: 12),
-                  fechasalida(),
+                  campoSoloLectura("Fecha de salida", controller.fechaSalidaController),
                   const SizedBox(height: 12),
-                  horasalida(),
+                  campoSoloLectura("Hora de salida", controller.horaSalidaController),
                   const SizedBox(height: 12),
-                  ipsalida(),
+                  campoSoloLectura("IP de salida", controller.ipSalidaController),
                   const SizedBox(height: 12),
-                  macsalida(),
+                  campoSoloLectura("MAC de salida", controller.macSalidaController),
                   const SizedBox(height: 12),
-                  actividadesrealizadas(),
+                  actividadesrealizadas(controller.actividadesController),
                   const SizedBox(height: 24),
-                  botonsalida(),
+                  Estilosbotones.btnsuccess("REGISTRAR SALIDA", () {
+                    controller.registrarSalida();
+                  }),
                   const SizedBox(height: 16),
-                  botonregresar(context),
+                  Estilosbotones.btndanger("REGRESAR", () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Escritorio()),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -45,78 +56,28 @@ class Salida extends StatelessWidget {
     );
   }
 
-  Widget usuario() {
-    return const TextField(
+  Widget campoSoloLectura(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      readOnly: true,
       decoration: InputDecoration(
-        labelText: 'Usuario',
-        border: OutlineInputBorder(),
+        labelText: label,
+        filled: true,
+        fillColor: Colors.grey[200],
+        border: const OutlineInputBorder(),
       ),
     );
   }
 
-  Widget fechasalida() {
-    return const TextField(
-      decoration: InputDecoration(
-        labelText: 'Fecha de salida',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget horasalida() {
-    return const TextField(
-      decoration: InputDecoration(
-        labelText: 'Hora de salida',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget ipsalida() {
-    return const TextField(
-      decoration: InputDecoration(
-        labelText: 'IP de salida',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget macsalida() {
-    return const TextField(
-      decoration: InputDecoration(
-        labelText: 'MAC de salida',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget actividadesrealizadas() {
-    return const TextField(
+  Widget actividadesrealizadas(TextEditingController controller) {
+    return TextField(
+      controller: controller,
       maxLines: 4,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Actividades realizadas',
         alignLabelWithHint: true,
         border: OutlineInputBorder(),
       ),
     );
   }
-
-  Widget botonsalida() {
-    return Estilosbotones.btnsuccess(
-      "REGISTRAR SALIDA",
-      () {}, // Asegúrate de tener esta clase creada
-    );
-  }
-}
-
-Widget botonregresar(BuildContext context) {
-  return Estilosbotones.btndanger(
-  "REGRESAR",
-  () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Escritorio()),
-    );
-  },
-);
 }

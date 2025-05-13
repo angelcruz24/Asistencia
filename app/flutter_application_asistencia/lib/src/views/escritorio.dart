@@ -55,7 +55,7 @@ class Escritorio extends StatelessWidget {
               Estilosbotones.btnwarning("REGISTRAR SALIDA", () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Salida()),
+                  MaterialPageRoute(builder: (context) => Salida()),
                 );// Acción para registrar salida
               }),
               const SizedBox(height: 20),
