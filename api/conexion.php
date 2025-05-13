@@ -12,6 +12,7 @@ $db = "seismex1_asistencia";
 $conn = new mysqli($host, $user, $password, $db);
 
 if ($conn->connect_error) {
+    var_dump("Conexion fallida: " . $conn->connect_error);
     die("Conexion fallida: " . $conn->connect_error);
 }
 
