@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_asistencia/src/Controllers/loginController.dart';
+import 'package:flutter_application_asistencia/src/controladores/login.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/configuracion.dart';
+import 'package:flutter_application_asistencia/src/vistas/configuracion.dart';
 
 
 class Login extends StatefulWidget {

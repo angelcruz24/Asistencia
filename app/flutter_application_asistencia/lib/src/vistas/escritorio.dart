@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/entrada.dart';
-import 'package:flutter_application_asistencia/src/views/login.dart';
-import 'package:flutter_application_asistencia/src/views/salida.dart'; 
+import 'package:flutter_application_asistencia/src/vistas/entrada.dart';
+import 'package:flutter_application_asistencia/src/vistas/login.dart';
+import 'package:flutter_application_asistencia/src/vistas/salida.dart'; 
 
 class Escritorio extends StatelessWidget {
   final String nombreUsuario;

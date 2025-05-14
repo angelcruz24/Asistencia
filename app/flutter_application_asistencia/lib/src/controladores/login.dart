@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_application_asistencia/config.dart';
-import 'package:flutter_application_asistencia/src/views/escritorio.dart';
+import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:http/http.dart' as http;
 
 class LoginController {

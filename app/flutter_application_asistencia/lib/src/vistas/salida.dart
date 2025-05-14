@@ -1,9 +1,9 @@
 // lib/views/salida_view.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_application_asistencia/src/Controllers/salidacontroller.dart';
+import 'package:flutter_application_asistencia/src/controladores/salida.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/escritorio.dart';
+import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 
 class Salida extends StatelessWidget {
   final SalidaController controller = SalidaController();

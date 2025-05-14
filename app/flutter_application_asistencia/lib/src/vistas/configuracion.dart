@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_asistencia/src/Controllers/configuracioncontroller.dart';
+import 'package:flutter_application_asistencia/src/controladores/configuracion.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/login.dart';
+import 'package:flutter_application_asistencia/src/vistas/login.dart';
 
 class Configuracion extends StatefulWidget {
   const Configuracion({super.key});

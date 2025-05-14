@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
-import 'package:flutter_application_asistencia/src/views/escritorio.dart';
+import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 
 
 class Entrada extends StatelessWidget {
