@@ -9,10 +9,10 @@ class ConfiguracionController {
   final ValueNotifier<String> mensajeConexion = ValueNotifier('');
 
   ConfiguracionController() {
-    _cargarDireccionGuardada();
+    _cargardireccionguardada();
   }
 
-  void _cargarDireccionGuardada() async {
+  void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
@@ -24,7 +24,7 @@ class ConfiguracionController {
     }
   }
 
-  Future<void> guardarDireccion({bool conexionExitosa = false}) async {
+  Future<void> guardardireccion() async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccionController.text.trim();
     if (!direccion.endsWith('/')) {
@@ -32,56 +32,42 @@ class ConfiguracionController {
     }
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
-    await prefs.setBool('conexion_exitosa', conexionExitosa);
     print('✅ Dirección guardada: $url');
-    print('📦 Estado de conexión guardado: $conexionExitosa');
   }
 
-  bool validarDireccion(String direccion) {
+  bool validardireccion(String direccion) {
     final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
     final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
     return ipRegExp.hasMatch(direccion) || domainRegExp.hasMatch(direccion);
   }
 
-  Future<void> probarConexion() async {
+  Future<void> probarconexion() async {
     final direccion = direccionController.text.trim();
 
-    if (!validarDireccion(direccion)) {
+    if (!validardireccion(direccion)) {
       mensajeConexion.value = '❌ Dirección inválida';
       print('❌ Dirección inválida: $direccion');
       return;
     }
 
     mensajeConexion.value = '⏳ Conectando...';
-    final urlCompleta =
-        '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
+    final urlCompleta = '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
     print('🌐 Intentando conectar a: $urlCompleta');
 
     try {
       final uri = Uri.parse(urlCompleta);
+      final response = await http.get(uri).timeout(const Duration(seconds: 5));
 
-      // Hacer la solicitud POST en lugar de GET
-      final response = await http.post(
-        uri,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      ).timeout(const Duration(seconds: 5));
-
-      // Verificar la respuesta
       if (response.statusCode == 200) {
-        await guardarDireccion(
-            conexionExitosa:
-                true); // Guardar la dirección y el estado de la conexión exitosa
-        mensajeConexion.value = '✅ Conexión exitosa (POST con accion=ping)';
-        print('✅ Conexión exitosa con POST a $urlCompleta');
+        await guardardireccion();
+        mensajeConexion.value = '✅ Conexión exitosa';
+        print('✅ Conexión exitosa a $urlCompleta');
       } else {
-        mensajeConexion.value = '⚠ Error HTTP: Código ${response.statusCode}';
-        print('⚠ Error HTTP: Código ${response.statusCode}');
+        mensajeConexion.value = '⚠ Error: Código ${response.statusCode}';
+        print('⚠ Error HTTP: Código ${response.statusCode} al conectar a $urlCompleta');
       }
     } on TimeoutException catch (e) {
-      mensajeConexion.value =
-          '⏱ Tiempo de espera agotado: el servidor no respondió.';
+      mensajeConexion.value = '⏱ Tiempo de espera agotado: el servidor no respondió.';
       print('⏱ TimeoutException: $e');
     } on http.ClientException catch (e) {
       mensajeConexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
