@@ -5,10 +5,10 @@ import 'package:flutter_application_asistencia/src/vistas/entrada.dart';
 import 'package:flutter_application_asistencia/src/vistas/login.dart';
 import 'package:flutter_application_asistencia/src/vistas/salida.dart'; 
 
-class Escritorio extends StatelessWidget {
-  final String nombreUsuario;
+class escritorio extends StatelessWidget {
+  final String nombreusuario;
 
-  const Escritorio({super.key, required this.nombreUsuario});
+  const escritorio({super.key, required this.nombreusuario});
 
 
   @override
@@ -36,7 +36,7 @@ class Escritorio extends StatelessWidget {
               const SizedBox(height: 5),
               TextField(
                 enabled: false,
-                controller: TextEditingController(text: nombreUsuario),
+                controller: TextEditingController(text: nombreusuario),
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color.fromARGB(255, 255, 255, 255),
@@ -50,7 +50,7 @@ class Escritorio extends StatelessWidget {
               Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Entrada(nombreUsuario: nombreUsuario)),
+                  MaterialPageRoute(builder: (context) => entrada(nombreusuario: nombreusuario)),
                 );
               }),
               const SizedBox(height: 20),
@@ -59,7 +59,7 @@ class Escritorio extends StatelessWidget {
               Estilosbotones.btnwarning("REGISTRAR SALIDA", () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Salida(nombreUsuario: nombreUsuario)),
+                  MaterialPageRoute(builder: (context) => salida(nombreusuario: nombreusuario)),
                 );// Acción para registrar salida
               }),
               const SizedBox(height: 20),

@@ -4,15 +4,15 @@ import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/login.dart';
 
-class Configuracion extends StatefulWidget {
-  const Configuracion({super.key});
+class configuracion extends StatefulWidget {
+  const configuracion({super.key});
 
   @override
-  State<Configuracion> createState() => _ConfiguracionState();
+  State<configuracion> createState() => _ConfiguracionState();
 }
 
-class _ConfiguracionState extends State<Configuracion> {
-  final ConfiguracionController controlador = ConfiguracionController();
+class _ConfiguracionState extends State<configuracion> {
+  final configuracioncontroller controlador = configuracioncontroller();
 
   @override
   void dispose() {
@@ -62,7 +62,7 @@ class _ConfiguracionState extends State<Configuracion> {
         ),
         const SizedBox(height: 8),
         TextField(
-          controller: controlador.direccionController,
+          controller: controlador.direccioncontroller,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Ej. 192.168.1.1:8000 o ejemplo.com',
@@ -90,39 +90,46 @@ class _ConfiguracionState extends State<Configuracion> {
     return Estilosbotones.btnprimary(
       "PROBAR CONEXION",
       () async {
-        await controlador.probarConexion();
+        await controlador.probarconexion();
         setState(() {}); // Refresca el resultado
       },
     );
   }
 
   Widget resultadoconexion() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'RESULTADO DE LA CONEXION',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'RESULTADO DE LA CONEXION',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        height: 100,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
         ),
-        const SizedBox(height: 8),
-        Container(
-          height: 100,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              controlador.mensajeConexion.value,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+        child: ValueListenableBuilder<List<String>>(
+          valueListenable: controlador.mensajesConexion,
+          builder: (context, mensajes, _) {
+            return ListView(
+              children: mensajes
+                  .map((mensaje) => Text(
+                        mensaje,
+                        style: const TextStyle(fontSize: 14),
+                      ))
+                  .toList(),
+            );
+          },
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget botonregresar(BuildContext context) {
     return Estilosbotones.btndanger(
