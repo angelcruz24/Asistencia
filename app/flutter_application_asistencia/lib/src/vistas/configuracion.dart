@@ -113,7 +113,7 @@ class _ConfiguracionState extends State<configuracion> {
           borderRadius: BorderRadius.circular(8),
         ),
         child: ValueListenableBuilder<List<String>>(
-          valueListenable: controlador.mensajesConexion,
+          valueListenable: controlador.mensajesconexion,
           builder: (context, mensajes, _) {
             return ListView(
               children: mensajes
