@@ -6,36 +6,40 @@ import 'package:http/http.dart' as http;
 class configuracioncontroller {
   final TextEditingController direccioncontroller = TextEditingController();
   String protocolo = 'http';
-  final ValueNotifier<String> mensajeconexion = ValueNotifier('');
+  final ValueNotifier<List<String>> mensajesConexion = ValueNotifier([]);
 
   configuracioncontroller() {
     _cargardireccionguardada();
   }
 
+  void _agregarMensaje(String mensaje) {
+    mensajesConexion.value = [...mensajesConexion.value, mensaje];
+    print(mensaje);
+  }
+
   void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
-    final direccionlimpia = prefs.getString('direccion_limpia') ?? '';
-    direccioncontroller.text = direccionlimpia;
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
       protocolo = 'https';
+      direccioncontroller.text = url.replaceFirst('https://', '');
     } else if (url.startsWith('http://')) {
       protocolo = 'http';
+      direccioncontroller.text = url.replaceFirst('http://', '');
     }
   }
 
   Future<void> guardardireccion({bool conexionexitosa = false}) async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccioncontroller.text.trim();
-    await prefs.setString('direccion_limpia', direccion);
     if (!direccion.endsWith('/')) {
       direccion += '/';
     }
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
     await prefs.setBool('conexion_exitosa', conexionexitosa);
-    print('✅ Dirección guardada: $url');
-    print('📦 Estado de conexión guardado: $conexionexitosa');
+    _agregarMensaje('💾 Dirección guardada correctamente.');
+    _agregarMensaje('📦 Estado de conexión guardado: $conexionexitosa');
   }
 
   bool validardireccion(String direccion) {
@@ -45,23 +49,24 @@ class configuracioncontroller {
   }
 
   Future<void> probarconexion() async {
+    mensajesConexion.value = []; // Limpiar mensajes anteriores
     final direccion = direccioncontroller.text.trim();
 
     if (!validardireccion(direccion)) {
-      mensajeconexion.value = '❌ Dirección inválida';
-      print('❌ Dirección inválida: $direccion');
+      _agregarMensaje('❌ Dirección inválida.');
       return;
     }
 
-    mensajeconexion.value = '⏳ Conectando...';
+    _agregarMensaje('✅ Dirección válida: $direccion');
+    _agregarMensaje('🔧 Preparando conexión...');
+
     final urlcompleta =
         '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
-    print('🌐 Intentando conectar a: $urlcompleta');
+    _agregarMensaje('🔌 Estableciendo conexión con el servidor...');
 
     try {
       final uri = Uri.parse(urlcompleta);
 
-      // Hacer la solicitud POST en lugar de GET
       final response = await http.post(
         uri,
         headers: {
@@ -69,32 +74,25 @@ class configuracioncontroller {
         },
       ).timeout(const Duration(seconds: 5));
 
-      // Verificar la respuesta
+      _agregarMensaje('📡 Respuesta recibida (código ${response.statusCode})');
+
       if (response.statusCode == 200) {
-        await guardardireccion(
-            conexionexitosa:
-                true); // Guardar la dirección y el estado de la conexión exitosa
-        mensajeconexion.value = '✅ Conexión exitosa (POST con accion=ping)';
-        print('✅ Conexión exitosa con POST a $urlcompleta');
+        await guardardireccion(conexionexitosa: true);
+        _agregarMensaje('✅ Conexión exitosa. Dirección guardada.');
       } else {
-        mensajeconexion.value = '⚠ Error HTTP: Código ${response.statusCode}';
-        print('⚠ Error HTTP: Código ${response.statusCode}');
+        _agregarMensaje('⚠ Error HTTP: Código ${response.statusCode}');
       }
-    } on TimeoutException catch (e) {
-      mensajeconexion.value =
-          '⏱ Tiempo de espera agotado: el servidor no respondió.';
-      print('⏱ TimeoutException: $e');
+    } on TimeoutException {
+      _agregarMensaje('⏱ Tiempo de espera agotado: el servidor no respondió.');
     } on http.ClientException catch (e) {
-      mensajeconexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
-      print('❌ ClientException: $e');
+      _agregarMensaje('❌ Error de cliente HTTP: ${e.message}');
     } catch (e) {
-      mensajeconexion.value = '❌ No se pudo conectar: ${e.toString()}';
-      print('❌ Excepción desconocida: $e');
+      _agregarMensaje('❌ Error desconocido: ${e.toString()}');
     }
   }
 
   void dispose() {
     direccioncontroller.dispose();
-    mensajeconexion.dispose();
+    mensajesConexion.dispose();
   }
 }
