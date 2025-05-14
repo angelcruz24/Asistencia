@@ -6,40 +6,41 @@ import 'package:http/http.dart' as http;
 class configuracioncontroller {
   final TextEditingController direccioncontroller = TextEditingController();
   String protocolo = 'http';
-  final ValueNotifier<List<String>> mensajesConexion = ValueNotifier([]);
+  final ValueNotifier<List<String>> mensajesconexion = ValueNotifier([]);
 
   configuracioncontroller() {
     _cargardireccionguardada();
   }
 
-  void _agregarMensaje(String mensaje) {
-    mensajesConexion.value = [...mensajesConexion.value, mensaje];
+  void _agregarmensaje(String mensaje) {
+    mensajesconexion.value = [...mensajesconexion.value, mensaje];
     print(mensaje);
   }
 
   void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
+    final direccionlimpia = prefs.getString('direccion_limpia') ?? '';
+    direccioncontroller.text = direccionlimpia;
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
       protocolo = 'https';
-      direccioncontroller.text = url.replaceFirst('https://', '');
     } else if (url.startsWith('http://')) {
       protocolo = 'http';
-      direccioncontroller.text = url.replaceFirst('http://', '');
     }
   }
 
   Future<void> guardardireccion({bool conexionexitosa = false}) async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccioncontroller.text.trim();
+    await prefs.setString('direccion_limpia', direccion);
     if (!direccion.endsWith('/')) {
       direccion += '/';
     }
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
     await prefs.setBool('conexion_exitosa', conexionexitosa);
-    _agregarMensaje('💾 Dirección guardada correctamente.');
-    _agregarMensaje('📦 Estado de conexión guardado: $conexionexitosa');
+    _agregarmensaje('💾 Dirección guardada correctamente.');
+    _agregarmensaje('📦 Estado de conexión guardado: $conexionexitosa');
   }
 
   bool validardireccion(String direccion) {
@@ -49,20 +50,20 @@ class configuracioncontroller {
   }
 
   Future<void> probarconexion() async {
-    mensajesConexion.value = []; // Limpiar mensajes anteriores
+    mensajesconexion.value = []; // Limpiar mensajes anteriores
     final direccion = direccioncontroller.text.trim();
 
     if (!validardireccion(direccion)) {
-      _agregarMensaje('❌ Dirección inválida.');
+      _agregarmensaje('❌ Dirección inválida.');
       return;
     }
 
-    _agregarMensaje('✅ Dirección válida: $direccion');
-    _agregarMensaje('🔧 Preparando conexión...');
+    _agregarmensaje('✅ Dirección válida: $direccion');
+    _agregarmensaje('🔧 Preparando conexión...');
 
     final urlcompleta =
         '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
-    _agregarMensaje('🔌 Estableciendo conexión con el servidor...');
+    _agregarmensaje('🔌 Estableciendo conexión con el servidor...');
 
     try {
       final uri = Uri.parse(urlcompleta);
@@ -74,25 +75,25 @@ class configuracioncontroller {
         },
       ).timeout(const Duration(seconds: 5));
 
-      _agregarMensaje('📡 Respuesta recibida (código ${response.statusCode})');
+      _agregarmensaje('📡 Respuesta recibida (código ${response.statusCode})');
 
       if (response.statusCode == 200) {
         await guardardireccion(conexionexitosa: true);
-        _agregarMensaje('✅ Conexión exitosa. Dirección guardada.');
+        _agregarmensaje('✅ Conexión exitosa. Dirección guardada.');
       } else {
-        _agregarMensaje('⚠ Error HTTP: Código ${response.statusCode}');
+        _agregarmensaje('⚠ Error HTTP: Código ${response.statusCode}');
       }
     } on TimeoutException {
-      _agregarMensaje('⏱ Tiempo de espera agotado: el servidor no respondió.');
+      _agregarmensaje('⏱ Tiempo de espera agotado: el servidor no respondió.');
     } on http.ClientException catch (e) {
-      _agregarMensaje('❌ Error de cliente HTTP: ${e.message}');
+      _agregarmensaje('❌ Error de cliente HTTP: ${e.message}');
     } catch (e) {
-      _agregarMensaje('❌ Error desconocido: ${e.toString()}');
+      _agregarmensaje('❌ Error desconocido: ${e.toString()}');
     }
   }
 
   void dispose() {
     direccioncontroller.dispose();
-    mensajesConexion.dispose();
+    mensajesconexion.dispose();
   }
 }
