@@ -90,7 +90,7 @@ class _ConfiguracionState extends State<Configuracion> {
     return Estilosbotones.btnprimary(
       "PROBAR CONEXION",
       () async {
-        await controlador.probarConexion();
+        await controlador.probarconexion();
         setState(() {}); // Refresca el resultado
       },
     );

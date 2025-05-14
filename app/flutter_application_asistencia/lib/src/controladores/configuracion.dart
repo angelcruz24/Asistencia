@@ -9,10 +9,10 @@ class ConfiguracionController {
   final ValueNotifier<String> mensajeConexion = ValueNotifier('');
 
   ConfiguracionController() {
-    _cargarDireccionGuardada();
+    _cargardireccionguardada();
   }
 
-  void _cargarDireccionGuardada() async {
+  void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
@@ -24,7 +24,7 @@ class ConfiguracionController {
     }
   }
 
-  Future<void> guardarDireccion() async {
+  Future<void> guardardireccion() async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccionController.text.trim();
     if (!direccion.endsWith('/')) {
@@ -35,16 +35,16 @@ class ConfiguracionController {
     print('✅ Dirección guardada: $url');
   }
 
-  bool validarDireccion(String direccion) {
+  bool validardireccion(String direccion) {
     final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
     final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
     return ipRegExp.hasMatch(direccion) || domainRegExp.hasMatch(direccion);
   }
 
-  Future<void> probarConexion() async {
+  Future<void> probarconexion() async {
     final direccion = direccionController.text.trim();
 
-    if (!validarDireccion(direccion)) {
+    if (!validardireccion(direccion)) {
       mensajeConexion.value = '❌ Dirección inválida';
       print('❌ Dirección inválida: $direccion');
       return;
@@ -59,7 +59,7 @@ class ConfiguracionController {
       final response = await http.get(uri).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        await guardarDireccion();
+        await guardardireccion();
         mensajeConexion.value = '✅ Conexión exitosa';
         print('✅ Conexión exitosa a $urlCompleta');
       } else {
