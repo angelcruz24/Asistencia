@@ -14,19 +14,20 @@ class configuracioncontroller {
 
   void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
+    final direccionlimpia = prefs.getString('direccion_limpia') ?? '';
+    direccioncontroller.text = direccionlimpia;
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
       protocolo = 'https';
-      direccioncontroller.text = url.replaceFirst('https://', '');
     } else if (url.startsWith('http://')) {
       protocolo = 'http';
-      direccioncontroller.text = url.replaceFirst('http://', '');
     }
   }
 
   Future<void> guardardireccion({bool conexionexitosa = false}) async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccioncontroller.text.trim();
+    await prefs.setString('direccion_limpia', direccion);
     if (!direccion.endsWith('/')) {
       direccion += '/';
     }
