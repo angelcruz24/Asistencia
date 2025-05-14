@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -31,11 +32,12 @@ class ConfiguracionController {
     }
     final url = '$protocolo://$direccion';
     await prefs.setString('base_url', url);
+    print('✅ Dirección guardada: $url');
   }
 
   bool validarDireccion(String direccion) {
-    final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?\$');
-    final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?\$');
+    final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
+    final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
     return ipRegExp.hasMatch(direccion) || domainRegExp.hasMatch(direccion);
   }
 
@@ -44,23 +46,35 @@ class ConfiguracionController {
 
     if (!validarDireccion(direccion)) {
       mensajeConexion.value = '❌ Dirección inválida';
+      print('❌ Dirección inválida: $direccion');
       return;
     }
 
-    mensajeConexion.value = 'Conectando...';
+    mensajeConexion.value = '⏳ Conectando...';
+    final urlCompleta = '$protocolo://$direccion';
+    print('🌐 Intentando conectar a: $urlCompleta');
 
     try {
-      final uri = Uri.parse('$protocolo://$direccion');
+      final uri = Uri.parse(urlCompleta);
       final response = await http.get(uri).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        mensajeConexion.value = '✅ Conexión exitosa';
         await guardarDireccion();
+        mensajeConexion.value = '✅ Conexión exitosa';
+        print('✅ Conexión exitosa a $urlCompleta');
       } else {
-        mensajeConexion.value = '⚠ Error: código ${response.statusCode}';
+        mensajeConexion.value = '⚠ Error: Código ${response.statusCode}';
+        print('⚠ Error HTTP: Código ${response.statusCode} al conectar a $urlCompleta');
       }
+    } on TimeoutException catch (e) {
+      mensajeConexion.value = '⏱ Tiempo de espera agotado: el servidor no respondió.';
+      print('⏱ TimeoutException: $e');
+    } on http.ClientException catch (e) {
+      mensajeConexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
+      print('❌ ClientException: $e');
     } catch (e) {
-      mensajeConexion.value = '❌ No se pudo conectar: $e';
+      mensajeConexion.value = '❌ No se pudo conectar: ${e.toString()}';
+      print('❌ Excepción desconocida: $e');
     }
   }
 
