@@ -13,7 +13,7 @@ class Login extends StatefulWidget {
 }
 
 class Iniciosesion extends State<Login> {
-  final LoginController _loginController = LoginController();
+  final logincontroller _loginController = logincontroller();
   bool _obscureText = true;
 
   @override
@@ -34,7 +34,7 @@ class Iniciosesion extends State<Login> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Configuracion()), // Asegúrate de tener esta clase creada
+          MaterialPageRoute(builder: (context) => const configuracion()), // Asegúrate de tener esta clase creada
         );
       },
       child: Image.asset(
@@ -73,7 +73,7 @@ class Iniciosesion extends State<Login> {
 
   Widget txtUsuario() {
     return TextFormField(
-      controller: _loginController.controllerUsuario,
+      controller: _loginController.controllerusuario,
       decoration: const InputDecoration(
         labelText: 'Usuario',
       ),
@@ -82,7 +82,7 @@ class Iniciosesion extends State<Login> {
 
   Widget txtPassword() {
     return TextFormField(
-      controller: _loginController.controllerPassword,
+      controller: _loginController.controllerpassword,
       obscureText: _obscureText,
       decoration: InputDecoration(
         labelText: 'Contraseña',

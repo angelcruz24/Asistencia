@@ -4,20 +4,20 @@ import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 
 
-class Entrada extends StatelessWidget {
-  final String nombreUsuario;
+class entrada extends StatelessWidget {
+  final String nombreusuario;
 
-  Entrada({super.key, required this.nombreUsuario});
+  entrada({super.key, required this.nombreusuario});
 
   //final TextEditingController usuarioController = TextEditingController(text: "Juan Pérez");
-  final TextEditingController fechaController = TextEditingController(text: "2025-05-12");
-  final TextEditingController horaController = TextEditingController(text: "08:30 AM");
-  final TextEditingController ipController = TextEditingController(text: "192.168.1.15");
-  final TextEditingController macController = TextEditingController(text: "00:1A:2B:3C:4D:5E");
+  final TextEditingController fechacontroller = TextEditingController(text: "2025-05-12");
+  final TextEditingController horacontroller = TextEditingController(text: "08:30 AM");
+  final TextEditingController ipcontroller = TextEditingController(text: "192.168.1.15");
+  final TextEditingController maccontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
 
   @override
   Widget build(BuildContext context) {
-    final usuarioController = TextEditingController(text: nombreUsuario);
+    final usuariocontroller = TextEditingController(text: nombreusuario);
     return Scaffold(
       appBar: AppBar(
         title: const Text('ENTRADA', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
@@ -30,11 +30,11 @@ class Entrada extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            campoentrada("USUARIO:", usuarioController),
-            campoentrada("FECHA ENTRADA:", fechaController),
-            campoentrada("HORA ENTRADA:", horaController),
-            campoentrada("IP ENTRADA:", ipController),
-            campoentrada("MAC ENTRADA:", macController),
+            campoentrada("USUARIO:", usuariocontroller),
+            campoentrada("FECHA ENTRADA:", fechacontroller),
+            campoentrada("HORA ENTRADA:", horacontroller),
+            campoentrada("IP ENTRADA:", ipcontroller),
+            campoentrada("MAC ENTRADA:", maccontroller),
             const SizedBox(height: 30),
             Center(
               child: Column(
@@ -47,7 +47,7 @@ class Entrada extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: nombreUsuario)),
+                      MaterialPageRoute(builder: (context) => escritorio(nombreusuario: nombreusuario)),
                     );
                   }),
                 ],

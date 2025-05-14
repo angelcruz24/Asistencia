@@ -5,16 +5,16 @@ import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 
-class Salida extends StatelessWidget {
-  final SalidaController controller = SalidaController();
-  final String nombreUsuario;
+class salida extends StatelessWidget {
+  final salidacontroller controller = salidacontroller();
+  final String nombreusuario;
 
-  Salida({super.key, required this.nombreUsuario});
+  salida({super.key, required this.nombreusuario});
 
 
   @override
   Widget build(BuildContext context) {
-    final usuarioController = TextEditingController(text: nombreUsuario);
+    final usuariocontroller = TextEditingController(text: nombreusuario);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,17 +27,17 @@ class Salida extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  campoSoloLectura("Usuario", usuarioController),
+                  campoSoloLectura("Usuario", usuariocontroller),
                   const SizedBox(height: 12),
-                  campoSoloLectura("Fecha de salida", controller.fechaSalidaController),
+                  campoSoloLectura("Fecha de salida", controller.fechasalidacontroller),
                   const SizedBox(height: 12),
-                  campoSoloLectura("Hora de salida", controller.horaSalidaController),
+                  campoSoloLectura("Hora de salida", controller.horasalidacontroller),
                   const SizedBox(height: 12),
-                  campoSoloLectura("IP de salida", controller.ipSalidaController),
+                  campoSoloLectura("IP de salida", controller.ipsalidacontroller),
                   const SizedBox(height: 12),
-                  campoSoloLectura("MAC de salida", controller.macSalidaController),
+                  campoSoloLectura("MAC de salida", controller.macsalidacontroller),
                   const SizedBox(height: 12),
-                  actividadesrealizadas(controller.actividadesController),
+                  actividadesrealizadas(controller.actividadescontroller),
                   const SizedBox(height: 24),
                   Estilosbotones.btnsuccess("REGISTRAR SALIDA", () {
                     controller.registrarSalida();
@@ -46,7 +46,7 @@ class Salida extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: nombreUsuario)),
+                      MaterialPageRoute(builder: (context) => escritorio(nombreusuario: nombreusuario)),
                     );
                   }),
                 ],

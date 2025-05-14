@@ -4,15 +4,15 @@ import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/login.dart';
 
-class Configuracion extends StatefulWidget {
-  const Configuracion({super.key});
+class configuracion extends StatefulWidget {
+  const configuracion({super.key});
 
   @override
-  State<Configuracion> createState() => _ConfiguracionState();
+  State<configuracion> createState() => _ConfiguracionState();
 }
 
-class _ConfiguracionState extends State<Configuracion> {
-  final ConfiguracionController controlador = ConfiguracionController();
+class _ConfiguracionState extends State<configuracion> {
+  final configuracioncontroller controlador = configuracioncontroller();
 
   @override
   void dispose() {
@@ -62,7 +62,7 @@ class _ConfiguracionState extends State<Configuracion> {
         ),
         const SizedBox(height: 8),
         TextField(
-          controller: controlador.direccionController,
+          controller: controlador.direccioncontroller,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Ej. 192.168.1.1:8000 o ejemplo.com',
@@ -115,7 +115,7 @@ class _ConfiguracionState extends State<Configuracion> {
           child: Align(
             alignment: Alignment.topLeft,
             child: Text(
-              controlador.mensajeConexion.value,
+              controlador.mensajeconexion.value,
               style: const TextStyle(fontSize: 14),
             ),
           ),

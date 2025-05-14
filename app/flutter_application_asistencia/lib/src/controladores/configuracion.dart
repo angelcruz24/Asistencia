@@ -3,62 +3,62 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class ConfiguracionController {
-  final TextEditingController direccionController = TextEditingController();
+class configuracioncontroller {
+  final TextEditingController direccioncontroller = TextEditingController();
   String protocolo = 'http';
-  final ValueNotifier<String> mensajeConexion = ValueNotifier('');
+  final ValueNotifier<String> mensajeconexion = ValueNotifier('');
 
-  ConfiguracionController() {
-    _cargarDireccionGuardada();
+  configuracioncontroller() {
+    _cargardireccionguardada();
   }
 
-  void _cargarDireccionGuardada() async {
+  void _cargardireccionguardada() async {
     final prefs = await SharedPreferences.getInstance();
     final url = prefs.getString('base_url') ?? '';
     if (url.startsWith('https://')) {
       protocolo = 'https';
-      direccionController.text = url.replaceFirst('https://', '');
+      direccioncontroller.text = url.replaceFirst('https://', '');
     } else if (url.startsWith('http://')) {
       protocolo = 'http';
-      direccionController.text = url.replaceFirst('http://', '');
+      direccioncontroller.text = url.replaceFirst('http://', '');
     }
   }
 
-  Future<void> guardarDireccion({bool conexionExitosa = false}) async {
+  Future<void> guardardireccion({bool conexionexitosa = false}) async {
     final prefs = await SharedPreferences.getInstance();
-    String direccion = direccionController.text.trim();
+    String direccion = direccioncontroller.text.trim();
     if (!direccion.endsWith('/')) {
       direccion += '/';
     }
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
-    await prefs.setBool('conexion_exitosa', conexionExitosa);
+    await prefs.setBool('conexion_exitosa', conexionexitosa);
     print('✅ Dirección guardada: $url');
-    print('📦 Estado de conexión guardado: $conexionExitosa');
+    print('📦 Estado de conexión guardado: $conexionexitosa');
   }
 
-  bool validarDireccion(String direccion) {
-    final ipRegExp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
-    final domainRegExp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
-    return ipRegExp.hasMatch(direccion) || domainRegExp.hasMatch(direccion);
+  bool validardireccion(String direccion) {
+    final ipregexp = RegExp(r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$');
+    final domainregexp = RegExp(r'^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?$');
+    return ipregexp.hasMatch(direccion) || domainregexp.hasMatch(direccion);
   }
 
-  Future<void> probarConexion() async {
-    final direccion = direccionController.text.trim();
+  Future<void> probarconexion() async {
+    final direccion = direccioncontroller.text.trim();
 
-    if (!validarDireccion(direccion)) {
-      mensajeConexion.value = '❌ Dirección inválida';
+    if (!validardireccion(direccion)) {
+      mensajeconexion.value = '❌ Dirección inválida';
       print('❌ Dirección inválida: $direccion');
       return;
     }
 
-    mensajeConexion.value = '⏳ Conectando...';
-    final urlCompleta =
+    mensajeconexion.value = '⏳ Conectando...';
+    final urlcompleta =
         '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
-    print('🌐 Intentando conectar a: $urlCompleta');
+    print('🌐 Intentando conectar a: $urlcompleta');
 
     try {
-      final uri = Uri.parse(urlCompleta);
+      final uri = Uri.parse(urlcompleta);
 
       // Hacer la solicitud POST en lugar de GET
       final response = await http.post(
@@ -70,30 +70,30 @@ class ConfiguracionController {
 
       // Verificar la respuesta
       if (response.statusCode == 200) {
-        await guardarDireccion(
-            conexionExitosa:
+        await guardardireccion(
+            conexionexitosa:
                 true); // Guardar la dirección y el estado de la conexión exitosa
-        mensajeConexion.value = '✅ Conexión exitosa (POST con accion=ping)';
-        print('✅ Conexión exitosa con POST a $urlCompleta');
+        mensajeconexion.value = '✅ Conexión exitosa (POST con accion=ping)';
+        print('✅ Conexión exitosa con POST a $urlcompleta');
       } else {
-        mensajeConexion.value = '⚠ Error HTTP: Código ${response.statusCode}';
+        mensajeconexion.value = '⚠ Error HTTP: Código ${response.statusCode}';
         print('⚠ Error HTTP: Código ${response.statusCode}');
       }
     } on TimeoutException catch (e) {
-      mensajeConexion.value =
+      mensajeconexion.value =
           '⏱ Tiempo de espera agotado: el servidor no respondió.';
       print('⏱ TimeoutException: $e');
     } on http.ClientException catch (e) {
-      mensajeConexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
+      mensajeconexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
       print('❌ ClientException: $e');
     } catch (e) {
-      mensajeConexion.value = '❌ No se pudo conectar: ${e.toString()}';
+      mensajeconexion.value = '❌ No se pudo conectar: ${e.toString()}';
       print('❌ Excepción desconocida: $e');
     }
   }
 
   void dispose() {
-    direccionController.dispose();
-    mensajeConexion.dispose();
+    direccioncontroller.dispose();
+    mensajeconexion.dispose();
   }
 }

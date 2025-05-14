@@ -5,18 +5,18 @@ import 'package:flutter_application_asistencia/config.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:http/http.dart' as http;
 
-class LoginController {
-  final TextEditingController controllerUsuario = TextEditingController();
-  final TextEditingController controllerPassword = TextEditingController();
+class logincontroller {
+  final TextEditingController controllerusuario = TextEditingController();
+  final TextEditingController controllerpassword = TextEditingController();
 
   void dispose() {
-    controllerUsuario.dispose();
-    controllerPassword.dispose();
+    controllerusuario.dispose();
+    controllerpassword.dispose();
   }
 
   Future<void> verificarlogin(BuildContext context) async {
-    if (controllerUsuario.text.trim().isEmpty ||
-        controllerPassword.text.trim().isEmpty) {
+    if (controllerusuario.text.trim().isEmpty ||
+        controllerpassword.text.trim().isEmpty) {
       mostrarmensaje(
           context, 'ERROR', 'Por favor, ingresa usuario y contraseña', DialogType.error);
       return;
@@ -30,8 +30,8 @@ class LoginController {
         url,
         headers: {"Content-Type": "application/json"},
         body: json.encode({
-          'nombre': controllerUsuario.text.trim(),
-          'clave': controllerPassword.text.trim(),
+          'nombre': controllerusuario.text.trim(),
+          'clave': controllerpassword.text.trim(),
         }),
       );
 
@@ -41,7 +41,7 @@ class LoginController {
         if (data['success']) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Escritorio(nombreUsuario: controllerUsuario.text.trim())),
+            MaterialPageRoute(builder: (context) => escritorio(nombreusuario: controllerusuario.text.trim())),
           );
         } else {
           mostrarmensaje(context, 'Login', data['message'], DialogType.error);
