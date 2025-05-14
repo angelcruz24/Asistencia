@@ -97,32 +97,39 @@ class _ConfiguracionState extends State<configuracion> {
   }
 
   Widget resultadoconexion() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'RESULTADO DE LA CONEXION',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'RESULTADO DE LA CONEXION',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        height: 100,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
         ),
-        const SizedBox(height: 8),
-        Container(
-          height: 100,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              controlador.mensajeconexion.value,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+        child: ValueListenableBuilder<List<String>>(
+          valueListenable: controlador.mensajesConexion,
+          builder: (context, mensajes, _) {
+            return ListView(
+              children: mensajes
+                  .map((mensaje) => Text(
+                        mensaje,
+                        style: const TextStyle(fontSize: 14),
+                      ))
+                  .toList(),
+            );
+          },
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget botonregresar(BuildContext context) {
     return Estilosbotones.btndanger(
