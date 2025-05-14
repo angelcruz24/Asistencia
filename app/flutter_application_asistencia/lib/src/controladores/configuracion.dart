@@ -24,7 +24,7 @@ class ConfiguracionController {
     }
   }
 
-  Future<void> guardarDireccion() async {
+  Future<void> guardarDireccion({bool conexionExitosa = false}) async {
     final prefs = await SharedPreferences.getInstance();
     String direccion = direccionController.text.trim();
     if (!direccion.endsWith('/')) {
@@ -32,7 +32,9 @@ class ConfiguracionController {
     }
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
+    await prefs.setBool('conexion_exitosa', conexionExitosa);
     print('✅ Dirección guardada: $url');
+    print('📦 Estado de conexión guardado: $conexionExitosa');
   }
 
   bool validarDireccion(String direccion) {
@@ -51,23 +53,35 @@ class ConfiguracionController {
     }
 
     mensajeConexion.value = '⏳ Conectando...';
-    final urlCompleta = '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
+    final urlCompleta =
+        '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
     print('🌐 Intentando conectar a: $urlCompleta');
 
     try {
       final uri = Uri.parse(urlCompleta);
-      final response = await http.get(uri).timeout(const Duration(seconds: 5));
 
+      // Hacer la solicitud POST en lugar de GET
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      ).timeout(const Duration(seconds: 5));
+
+      // Verificar la respuesta
       if (response.statusCode == 200) {
-        await guardarDireccion();
-        mensajeConexion.value = '✅ Conexión exitosa';
-        print('✅ Conexión exitosa a $urlCompleta');
+        await guardarDireccion(
+            conexionExitosa:
+                true); // Guardar la dirección y el estado de la conexión exitosa
+        mensajeConexion.value = '✅ Conexión exitosa (POST con accion=ping)';
+        print('✅ Conexión exitosa con POST a $urlCompleta');
       } else {
-        mensajeConexion.value = '⚠ Error: Código ${response.statusCode}';
-        print('⚠ Error HTTP: Código ${response.statusCode} al conectar a $urlCompleta');
+        mensajeConexion.value = '⚠ Error HTTP: Código ${response.statusCode}';
+        print('⚠ Error HTTP: Código ${response.statusCode}');
       }
     } on TimeoutException catch (e) {
-      mensajeConexion.value = '⏱ Tiempo de espera agotado: el servidor no respondió.';
+      mensajeConexion.value =
+          '⏱ Tiempo de espera agotado: el servidor no respondió.';
       print('⏱ TimeoutException: $e');
     } on http.ClientException catch (e) {
       mensajeConexion.value = '❌ Error HTTP: Verifica la dirección o conexión.';
