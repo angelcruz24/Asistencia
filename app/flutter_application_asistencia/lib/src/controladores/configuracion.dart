@@ -30,7 +30,7 @@ class ConfiguracionController {
     if (!direccion.endsWith('/')) {
       direccion += '/';
     }
-    final url = '$protocolo://$direccion';
+    final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
     print('✅ Dirección guardada: $url');
   }
@@ -51,7 +51,7 @@ class ConfiguracionController {
     }
 
     mensajeConexion.value = '⏳ Conectando...';
-    final urlCompleta = '$protocolo://$direccion';
+    final urlCompleta = '$protocolo://$direccion/asistencia/api/usuariosapp.php?accion=ping';
     print('🌐 Intentando conectar a: $urlCompleta');
 
     try {

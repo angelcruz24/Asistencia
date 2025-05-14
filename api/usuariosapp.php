@@ -15,6 +15,10 @@ require_once "conexion.php";
 $accion = $_GET['accion'];
 
 switch ($accion) {
+    case 'ping':
+        echo json_encode(['success' => true, 'message' => 'API en línea']);
+        break;
+    
     case 'login':  // Esta es la acción para login
         $data = json_decode(file_get_contents("php://input"), true);
 
