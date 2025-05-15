@@ -11,14 +11,23 @@ class salida extends StatelessWidget {
 
   salida({super.key, required this.nombreusuario});
 
-
   @override
   Widget build(BuildContext context) {
     final usuariocontroller = TextEditingController(text: nombreusuario);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("SALIDA"),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          "SALIDA",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            letterSpacing: 1.5,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,6 +36,7 @@ class salida extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
+                  const SizedBox(height: 24), // Espacio entre título y primer campo
                   campoSoloLectura("Usuario", usuariocontroller),
                   const SizedBox(height: 12),
                   campoSoloLectura("Fecha de salida", controller.fechasalidacontroller),
@@ -48,7 +58,9 @@ class salida extends StatelessWidget {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => escritorio(nombreusuario: nombreusuario)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              escritorio(nombreusuario: nombreusuario)),
                     );
                   }),
                 ],
