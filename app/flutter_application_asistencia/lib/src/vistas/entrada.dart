@@ -13,7 +13,8 @@ class entrada extends StatelessWidget {
   final TextEditingController fechacontroller = TextEditingController(text: "2025-05-12");
   final TextEditingController horacontroller = TextEditingController(text: "08:30 AM");
   final TextEditingController ipcontroller = TextEditingController(text: "192.168.1.15");
-  final TextEditingController maccontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
+  final TextEditingController bssidcontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
+  final TextEditingController uuicontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,8 @@ class entrada extends StatelessWidget {
             campoentrada("FECHA ENTRADA:", fechacontroller),
             campoentrada("HORA ENTRADA:", horacontroller),
             campoentrada("IP ENTRADA:", ipcontroller),
-            campoentrada("MAC ENTRADA:", maccontroller),
+            campoentrada("BSSID ENTRADA:", bssidcontroller),
+            campoentrada("UUI ENTRADA:", uuicontroller),
             const SizedBox(height: 30),
             Center(
               child: Column(
