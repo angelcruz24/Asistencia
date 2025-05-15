@@ -23,22 +23,6 @@ CREATE TABLE `asistencia` (
   `uuidsalida` varchar(250) DEFAULT NULL,
   `actividades` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-CREATE TABLE `asistencialistado` (
-`id` int(11)
-,`idusuario` int(11)
-,`usuario` varchar(50)
-,`fechaentrada` date
-,`horaentrada` time
-,`ipentrada` varchar(45)
-,`bssidentrada` varchar(45)
-,`uuidentrada` varchar(250)
-,`fechasalida` date
-,`horasalida` time
-,`ipsalida` varchar(250)
-,`bssidsalida` varchar(250)
-,`uuidsalida` varchar(250)
-,`actividades` varchar(250)
-);
 
 CREATE TABLE `usuariosapp` (
   `id` int(11) NOT NULL,
@@ -58,7 +42,7 @@ CREATE TABLE `usuariosweb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 DROP TABLE IF EXISTS `asistencialistado`;
 
-CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `horaentrada` AS `horaentrada`, `ipentrada` AS `ipentrada`, `bssidentrada` AS `bssidentrada`, `uuidentrada` AS `uuidentrada`, `fechasalida` AS `fechasalida`, `horasalida` AS `horasalida`, `ipsalida` AS `ipsalida`, `bssidsalida` AS `bssidsalida`, `uuidsalida` AS `uuidsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
+CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `asistencia`.`id` AS `id`, `asistencia`.`usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `asistencia`.`fechaentrada` AS `fechaentrada`, `asistencia`.`horaentrada` AS `horaentrada`, `asistencia`.`ipentrada` AS `ipentrada`, `asistencia`.`bssidentrada` AS `bssidentrada`, `asistencia`.`uuidentrada` AS `uuidentrada`, `asistencia`.`fechasalida` AS `fechasalida`, `asistencia`.`horasalida` AS `horasalida`,`asistencia`.`ipsalida` AS `ipsalida`, `asistencia`.`bssidsalida` AS `bssidsalida`, `asistencia`.`uuidsalida` AS `uuidsalida`, `asistencia`.`actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
 
 
 ALTER TABLE `asistencia`
