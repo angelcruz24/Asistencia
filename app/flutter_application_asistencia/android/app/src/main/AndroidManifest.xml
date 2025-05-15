@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_application_asistencia">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <!-- Compatibilidad de versiones -->
     <uses-sdk
         android:minSdkVersion="21"
