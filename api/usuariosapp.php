@@ -27,14 +27,15 @@ switch ($accion) {
             $nombre = $conn->real_escape_string($data['nombre']);
             $clave = $conn->real_escape_string($data['clave']);
 
-            // Consulta para verificar si las credenciales coinciden
-            $sql = "SELECT id FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave' AND estatus='1'";
+            // Consulta para verificar si las credenciales coinciden aqui tambien obtener el id,nombre de usuario y regresarlo a la app
+            $sql = "SELECT id,nombre FROM usuariosapp WHERE nombre='$nombre' AND clave='$clave' AND estatus='1'";
             $result = $conn->query($sql);
 
             // Verifica si se encontró un resultado
             if ($result && $result->num_rows > 0) {
                 // Si hay coincidencia, devuelve un mensaje de éxito
                 $usuario = $result->fetch_assoc();
+                //agregar que devuelva el nombre tambien
                 echo json_encode(['success' => true, 'message' => 'Credenciales correctas', 'id' => $usuario['id']]);
             } else {
                 // Si no hay coincidencia, devuelve un mensaje de error
@@ -46,6 +47,25 @@ switch ($accion) {
             // Si no se enviaron datos, retorna un error
             echo json_encode(['success' => false, 'message' => 'No se introdujeron datos de acceso']);
         }
+        break;
+
+    case 'fechahora':
+        //obtener la fecha y hora acutal del servidor. y regresarla como json para usarla en la app
+        break;
+
+    case 'consultarentrada':
+        //buscamos en la db si y a hay una entrada registrada, si la hay se regresa el id
+        $result = $conn->query("SELECT id FROM asistencialistado WHERE idusuario='$id' AND fechaentrada='$fecha'");
+        break;
+
+    case 'guardarentrada':
+        //guardar en la db la entrada
+        $result = $conn->query("INSERT INTO asistencia(usuario,fechaentrada,horaentrada y lo demas hasta uuidentrada) VALUES");
+        break;
+
+    case 'guardarsalida':
+        //idasistencia=obtener el id que regresaconsultarentrada,
+        $result = $conn->query("UPDATE asistencia SET todos los valores de salida WHERE id='$idasistencia'");
         break;
 
     case 'GET':
