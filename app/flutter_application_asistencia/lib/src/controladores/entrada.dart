@@ -1,34 +1,80 @@
-// lib/controllers/salida_controller.dart
+import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
-class entradacontroller {
-  final TextEditingController usuariocontroller = TextEditingController(text: "Juan Pérez");
-  final TextEditingController fechasalidacontroller = TextEditingController(text: "2025-05-13");
-  final TextEditingController horasalidacontroller = TextEditingController(text: "18:00");
-  final TextEditingController ipsalidacontroller = TextEditingController(text: "192.168.1.10");
-  final TextEditingController bssidsalidadcontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
-  final TextEditingController uuisalidacontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
-  final TextEditingController actividadescontroller = TextEditingController();
+class EntradaController {
+  final TextEditingController fechaController;
+  final TextEditingController horaController;
+  final TextEditingController ipController;
+  final TextEditingController bssidController;
+  final TextEditingController uuidController;
 
-  void registrarentrada() {
-    // Aquí puedes poner la lógica de registrar salida
-    debugPrint("Salida registrada:");
-    debugPrint("Usuario: ${usuariocontroller.text}");
-    debugPrint("Fecha: ${fechasalidacontroller.text}");
-    debugPrint("Hora: ${horasalidacontroller.text}");
-    debugPrint("IP: ${ipsalidacontroller.text}");
-    debugPrint("BSSID: ${bssidsalidadcontroller.text}");
-    debugPrint("UUI: ${uuisalidacontroller.text}");
-    debugPrint("Actividades: ${actividadescontroller.text}");
+  EntradaController({
+    required this.fechaController,
+    required this.horaController,
+    required this.ipController,
+    required this.bssidController,
+    required this.uuidController,
+  });
+
+  /// Método principal para cargar todos los datos en la vista
+  Future<void> cargarDatos() async {
+    await _obtenerFechaHoraServidor();
+    await _obtenerDatosDispositivo();
   }
 
-  void dispose() {
-    usuariocontroller.dispose();
-    fechasalidacontroller.dispose();
-    horasalidacontroller.dispose();
-    ipsalidacontroller.dispose();
-    bssidsalidadcontroller.dispose();
-    uuisalidacontroller.dispose();
-    actividadescontroller.dispose();
+  /// Carga la fecha y hora del servidor usando la dirección guardada en SharedPreferences
+  Future<void> _obtenerFechaHoraServidor() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final baseUrl = prefs.getString('base_url');
+
+      if (baseUrl == null || baseUrl.isEmpty) {
+        fechaController.text = "No URL";
+        horaController.text = "No URL";
+        return;
+      }
+
+      final url = Uri.parse('${baseUrl}fecha_hora.php');
+      final response = await http.get(url).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        fechaController.text = data['fecha'] ?? 'Fecha inválida';
+        horaController.text = data['hora'] ?? 'Hora inválida';
+      } else {
+        fechaController.text = "Error ${response.statusCode}";
+        horaController.text = "Error ${response.statusCode}";
+      }
+    } on TimeoutException {
+      fechaController.text = "Tiempo agotado";
+      horaController.text = "Tiempo agotado";
+    } catch (e) {
+      fechaController.text = "Error";
+      horaController.text = "Error";
+    }
+  }
+
+  /// Obtiene datos del dispositivo: IP, BSSID y UUID persistente
+  Future<void> _obtenerDatosDispositivo() async {
+    final info = NetworkInfo();
+    final ip = await info.getWifiIP();
+    final bssid = await info.getWifiBSSID();
+
+    final prefs = await SharedPreferences.getInstance();
+    String? uuid = prefs.getString("uuid");
+
+    if (uuid == null) {
+      uuid = const Uuid().v4();
+      await prefs.setString("uuid", uuid);
+    }
+
+    ipController.text = ip ?? "Desconocida";
+    bssidController.text = bssid ?? "Desconocido";
+    uuidController.text = uuid;
   }
 }
