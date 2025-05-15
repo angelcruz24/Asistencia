@@ -8,7 +8,7 @@ class Piedepagina extends StatelessWidget {
     return const Padding(
       padding: EdgeInsets.all(8),
       child: Text(
-        "Copyright © 2025 SEISMEXICO | Versión 0.1.9.2 | 9/5/2025",
+        "Copyright © 2025 SEISMEXICO | Versión 0.1.63 | 14 Mayo 2025",
         textAlign: TextAlign.center,
       ),
     );
