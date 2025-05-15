@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 class salidacontroller {
-  final TextEditingController usuariocontroller = TextEditingController(text: "Juan Pérez");
-  final TextEditingController fechasalidacontroller = TextEditingController(text: "2025-05-13");
-  final TextEditingController horasalidacontroller = TextEditingController(text: "18:00");
-  final TextEditingController ipsalidacontroller = TextEditingController(text: "192.168.1.10");
-  final TextEditingController bssidsalidadcontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
-  final TextEditingController uuisalidacontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
+  final TextEditingController usuariocontroller = TextEditingController();
+  final TextEditingController fechasalidacontroller = TextEditingController();
+  final TextEditingController horasalidacontroller = TextEditingController();
+  final TextEditingController ipsalidacontroller = TextEditingController();
+  final TextEditingController bssidsalidadcontroller = TextEditingController();
+  final TextEditingController uuisalidacontroller = TextEditingController();
   final TextEditingController actividadescontroller = TextEditingController();
 
   void registrarSalida() {
