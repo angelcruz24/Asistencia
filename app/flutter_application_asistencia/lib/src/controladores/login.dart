@@ -15,6 +15,15 @@ class logincontroller {
   }
 
   Future<void> verificarlogin(BuildContext context) async {
+    if (AppConfig.baseUrl.trim().isEmpty) {
+      mostrarmensaje(
+        context,
+        'Sin conexión',
+        'Primero debes establecer una conexión al servidor desde la configuración.',
+        DialogType.warning,
+      );
+      return;
+    }
     if (controllerusuario.text.trim().isEmpty ||
         controllerpassword.text.trim().isEmpty) {
       mostrarmensaje(

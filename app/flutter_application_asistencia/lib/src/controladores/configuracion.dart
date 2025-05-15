@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,6 +40,7 @@ class configuracioncontroller {
     final url = '$protocolo://$direccion/asistencia/api/';
     await prefs.setString('base_url', url);
     await prefs.setBool('conexion_exitosa', conexionexitosa);
+    AppConfig.baseUrl = url;
     _agregarmensaje('💾 Dirección guardada correctamente.');
     _agregarmensaje('📦 Estado de conexión guardado: $conexionexitosa');
   }
