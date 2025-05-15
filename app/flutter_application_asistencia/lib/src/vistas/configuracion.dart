@@ -106,7 +106,7 @@ class _ConfiguracionState extends State<configuracion> {
       ),
       const SizedBox(height: 8),
       Container(
-        height: 199,
+        height: 250,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
