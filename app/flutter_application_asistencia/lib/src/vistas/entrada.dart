@@ -3,18 +3,16 @@ import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 
-
 class entrada extends StatelessWidget {
   final String nombreusuario;
 
   entrada({super.key, required this.nombreusuario});
 
-  //final TextEditingController usuarioController = TextEditingController(text: "Juan Pérez");
-  final TextEditingController fechacontroller = TextEditingController(text: "2025-05-12");
-  final TextEditingController horacontroller = TextEditingController(text: "08:30 AM");
-  final TextEditingController ipcontroller = TextEditingController(text: "192.168.1.15");
-  final TextEditingController bssidcontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
-  final TextEditingController uuicontroller = TextEditingController(text: "00:1A:2B:3C:4D:5E");
+  final TextEditingController fechacontroller = TextEditingController();
+  final TextEditingController horacontroller = TextEditingController();
+  final TextEditingController ipcontroller = TextEditingController();
+  final TextEditingController bssidcontroller = TextEditingController();
+  final TextEditingController uuicontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +41,6 @@ class entrada extends StatelessWidget {
                 children: [
                   Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () {
                     // Acción al registrar entrada
-                    // Aquí puedes poner un mensaje o lógica de guardado
                   }),
                   const SizedBox(height: 15),
                   Estilosbotones.btndanger("REGRESAR", () {
@@ -72,7 +69,7 @@ class entrada extends StatelessWidget {
           const SizedBox(height: 5),
           TextField(
             controller: controlador,
-            readOnly: true, // Campo solo lectura
+            readOnly: true,
             decoration: InputDecoration(
               filled: true,
               fillColor: const Color.fromARGB(255, 255, 255, 255),
