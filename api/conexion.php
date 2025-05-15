@@ -14,9 +14,10 @@ $conn = new mysqli($host, $user, $password, $db);
 if ($conn->connect_error) {
     var_dump("Conexion fallida: " . $conn->connect_error);
     die("Conexion fallida: " . $conn->connect_error);
-} else {
-    echo "Conexion exitosa. Ten un buen dia";
-}
+} 
+// else {
+//     echo "Conexion exitosa. Ten un buen dia";
+// }
 
 // $connectionString = "mysql:hos=$host;dbname=$db;charset=utf8";
 // try {
