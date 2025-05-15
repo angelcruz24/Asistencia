@@ -19,7 +19,7 @@ switch ($accion) {
         echo json_encode(['success' => true, 'message' => 'API en línea']);
         break;
 
-    case 'login':  // Esta es la acción para login
+    case 'login':
         $data = json_decode(file_get_contents("php://input"), true);
 
         // Verifica si el usuario y la clave están definidos
@@ -51,11 +51,37 @@ switch ($accion) {
 
     case 'fechahora':
         //obtener la fecha y hora acutal del servidor. y regresarla como json para usarla en la app
+        //date_default_timezone_set('America/Mexico_City'); // Solo se coloca si necesitamos solo para un servidor 
+        $fecha = date("Y-m-d");
+        $hora = date("H:i:s");
+        echo json_encode([
+            'success' => true,
+            'fecha' => $fecha,
+            'hora' => $hora
+        ]);
         break;
 
     case 'consultarentrada':
         //buscamos en la db si y a hay una entrada registrada, si la hay se regresa el id
-        $result = $conn->query("SELECT id FROM asistencialistado WHERE idusuario='$id' AND fechaentrada='$fecha'");
+        //$result = $conn->query("SELECT id FROM asistencialistado WHERE idusuario='$id' AND fechaentrada='$fecha'");
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (isset($data['idusuario']) && isset($data['fechaentrada'])) {
+            $idusuario = $conn->real_escape_string($data['idusuario']);
+            $fechaentrada = $conn->real_escape_string($data['fechaentrada']);
+
+            $sql = "SELECT id FROM asistencialistado WHERE idusuario='$idusuario' AND fechaentrada='$fechaentrada'";
+            $result = $conn->query($sql);
+
+            if ($result && $result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                echo json_encode(['success' => true, 'id' => $row['id']]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'No hay entrada registrada']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
+        }
         break;
 
     case 'guardarentrada':
