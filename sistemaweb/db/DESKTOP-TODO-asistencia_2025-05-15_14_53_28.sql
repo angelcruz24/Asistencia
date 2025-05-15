@@ -7,40 +7,39 @@ START TRANSACTION;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-/*CREATE DATABASE IF NOT EXISTS `asistencia` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-USE `asistencia`;*/
 
-DROP TABLE IF EXISTS `asistencia`;
 CREATE TABLE `asistencia` (
   `id` int(11) NOT NULL,
   `usuario` int(11) DEFAULT NULL,
   `fechaentrada` date DEFAULT NULL,
-  `entrada` time DEFAULT NULL,
+  `horaentrada` time DEFAULT NULL,
   `ipentrada` varchar(45) DEFAULT NULL,
-  `macentrada` varchar(45) DEFAULT NULL,
+  `bssidentrada` varchar(45) DEFAULT NULL,
+  `uuidentrada` varchar(250) DEFAULT NULL,
   `fechasalida` date DEFAULT NULL,
-  `salida` time DEFAULT NULL,
-  `ipsalida` varchar(45) DEFAULT NULL,
-  `macsalida` varchar(45) DEFAULT NULL,
+  `horasalida` time DEFAULT NULL,
+  `ipsalida` varchar(250) DEFAULT NULL,
+  `bssidsalida` varchar(250) DEFAULT NULL,
+  `uuidsalida` varchar(250) DEFAULT NULL,
   `actividades` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-DROP VIEW IF EXISTS `asistencialistado`;
 CREATE TABLE `asistencialistado` (
 `id` int(11)
 ,`idusuario` int(11)
 ,`usuario` varchar(50)
 ,`fechaentrada` date
-,`entrada` time
+,`horaentrada` time
 ,`ipentrada` varchar(45)
-,`macentrada` varchar(45)
+,`bssidentrada` varchar(45)
+,`uuidentrada` varchar(250)
 ,`fechasalida` date
-,`salida` time
-,`ipsalida` varchar(45)
-,`macsalida` varchar(45)
+,`horasalida` time
+,`ipsalida` varchar(250)
+,`bssidsalida` varchar(250)
+,`uuidsalida` varchar(250)
 ,`actividades` varchar(250)
 );
 
-DROP TABLE IF EXISTS `usuariosapp`;
 CREATE TABLE `usuariosapp` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -51,7 +50,6 @@ CREATE TABLE `usuariosapp` (
 INSERT INTO `usuariosapp` (`id`, `nombre`, `clave`, `estatus`) VALUES
 (1, 'admin', '1234', 1);
 
-DROP TABLE IF EXISTS `usuariosweb`;
 CREATE TABLE `usuariosweb` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -60,8 +58,7 @@ CREATE TABLE `usuariosweb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 DROP TABLE IF EXISTS `asistencialistado`;
 
-DROP VIEW IF EXISTS `asistencialistado`;
-CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `asistencia`.`id` AS `id`, `asistencia`.`usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `asistencia`.`fechaentrada` AS `fechaentrada`, `asistencia`.`entrada` AS `entrada`, `asistencia`.`ipentrada` AS `ipentrada`, `asistencia`.`macentrada` AS `macentrada`, `asistencia`.`fechasalida` AS `fechasalida`, `asistencia`.`salida` AS `salida`, `asistencia`.`ipsalida` AS `ipsalida`, `asistencia`.`macsalida` AS `macsalida`, `asistencia`.`actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
+CREATE OR REPLACE VIEW `asistencialistado`  AS SELECT `id` AS `id`, `usuario` AS `idusuario`, `usuariosapp`.`nombre` AS `usuario`, `fechaentrada` AS `fechaentrada`, `horaentrada` AS `horaentrada`, `ipentrada` AS `ipentrada`, `bssidentrada` AS `bssidentrada`, `uuidentrada` AS `uuidentrada`, `fechasalida` AS `fechasalida`, `horasalida` AS `horasalida`, `ipsalida` AS `ipsalida`, `bssidsalida` AS `bssidsalida`, `uuidsalida` AS `uuidsalida`, `actividades` AS `actividades` FROM (`asistencia` left join `usuariosapp` on(`usuario` = `usuariosapp`.`id`)) ;
 
 
 ALTER TABLE `asistencia`
