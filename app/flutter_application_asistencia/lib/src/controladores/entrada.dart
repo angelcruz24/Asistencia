@@ -35,8 +35,8 @@ class entradacontroller {
 
   Future<void> _cargardatosusuario() async {
     final prefs = await SharedPreferences.getInstance();
-    final idusuario = prefs.getInt('usuario_id') ?? 0;
-    final nombreusuario = prefs.getString('usuario_nombre') ?? '';
+    final idusuario = prefs.getInt('usuarioid') ?? 0;
+    final nombreusuario = prefs.getString('usuarionombre') ?? '';
 
 
     idusuariocontroller.text = idusuario.toString();

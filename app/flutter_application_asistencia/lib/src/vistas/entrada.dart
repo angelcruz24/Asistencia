@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wifi_scan/wifi_scan.dart';  
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +25,8 @@ class _entradaState extends State<entrada> {
   late TextEditingController ipcontroller;
   late TextEditingController bssidcontroller;
   late TextEditingController uuicontroller;
+  late TextEditingController idusuariocontroller;
+  late TextEditingController nombreusuariocontroller;
 
   @override
   void initState() {
@@ -32,9 +36,25 @@ class _entradaState extends State<entrada> {
     ipcontroller = TextEditingController();
     bssidcontroller = TextEditingController();
     uuicontroller = TextEditingController();
+    idusuariocontroller = TextEditingController();
+    nombreusuariocontroller = TextEditingController();
     
     _cargardatosdispositivo();
-    _obtenerfechahoraActual();
+    _obtenerfechahoraservidor();
+    _cargardatosusuario();
+  }
+
+  Future<void> _cargardatosusuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idusuario = prefs.getInt('usuarioid') ?? 0;
+    final nombreusuario = prefs.getString('usuarionombre') ?? '';
+
+    if (mounted) {
+      setState(() {
+        idusuariocontroller.text = idusuario.toString();
+        nombreusuariocontroller.text = nombreusuario;
+      });
+    }
   }
   
   Future<void> _cargardatosdispositivo() async {
@@ -77,16 +97,38 @@ class _entradaState extends State<entrada> {
   }
 }
 
-  void _obtenerfechahoraActual() {
-    final ahora = DateTime.now();
-    fechacontroller.text = '${ahora.day}/${ahora.month}/${ahora.year}';
-    horacontroller.text = '${ahora.hour}:${ahora.minute.toString().padLeft(2, '0')}';
+  Future<void> _obtenerfechahoraservidor() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final servidor = prefs.getString('direccion_servidor') ?? 'http://localhost';
+      final url = Uri.parse('$servidor/api.php?accion=fechahora'); // ← Asegúrate que el path coincida
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['success']) {
+          if (mounted) {
+            setState(() {
+              fechacontroller.text = data['fecha'] ?? '';
+              horacontroller.text = data['hora']?.substring(0, 5) ?? ''; // hh:mm
+            });
+          }
+        } else {
+          print('Error del servidor: ${data['message']}');
+        }
+      } else {
+        print('Error HTTP: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error en la solicitud: $e');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
-    final usuariocontroller = TextEditingController(text: widget.nombreusuario);
-    
     return Scaffold(
       appBar: AppBar(
         title: const Text('ENTRADA', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
@@ -99,7 +141,8 @@ class _entradaState extends State<entrada> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _campoEntrada("USUARIO:", usuariocontroller),
+            _campoEntrada("ID USUARIO:", idusuariocontroller),
+            _campoEntrada("USUARIO:", nombreusuariocontroller),
             _campoEntrada("FECHA ENTRADA:", fechacontroller),
             _campoEntrada("HORA ENTRADA:", horacontroller),
             _campoEntrada("IP ENTRADA:", ipcontroller),

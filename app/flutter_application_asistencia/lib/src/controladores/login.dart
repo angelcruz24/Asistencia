@@ -49,14 +49,17 @@ class logincontroller {
         final data = json.decode(response.body);
 
         if (data['success']) {
-          final idUsuario = data['id']; 
-          final nombreUsuario = controllerusuario.text.trim();
+          // Conversión segura del ID
+          int idusuario = int.tryParse(data['id'].toString()) ?? 0;
+          String nombreusuario = data['nombre']?.toString() ?? controllerusuario.text.trim();
+
           final prefs = await SharedPreferences.getInstance();
-          await prefs.setInt('usuario_id', idUsuario);
-          await prefs.setString('usuario_nombre', nombreUsuario);
+          await prefs.setInt('usuarioid', idusuario);
+          await prefs.setString('usuarionombre', nombreusuario);
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => escritorio(nombreusuario: controllerusuario.text.trim())),
+            MaterialPageRoute(builder: (context) => escritorio(nombreusuario: nombreusuario)),
           );
         } else {
           mostrarmensaje(context, 'Login', data['message'], DialogType.error);

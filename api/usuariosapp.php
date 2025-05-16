@@ -36,7 +36,7 @@ switch ($accion) {
                 // Si hay coincidencia, devuelve un mensaje de éxito
                 $usuario = $result->fetch_assoc();
                 //agregar que devuelva el nombre tambien
-                echo json_encode(['success' => true, 'message' => 'Credenciales correctas', 'id' => $usuario['id']]);
+                echo json_encode(['success' => true, 'message' => 'Credenciales correctas', 'id' => $usuario['id'], 'nombre' => $usuario['nombre']]);
             } else {
                 // Si no hay coincidencia, devuelve un mensaje de error
                 echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas']);
