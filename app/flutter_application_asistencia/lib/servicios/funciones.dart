@@ -1,8 +1,13 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:wifi_scan/wifi_scan.dart';
 
+/// Obtener fecha y hora desde la API
 Future<Map<String, String>> obtenerfechahora() async {
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -28,11 +33,13 @@ Future<Map<String, String>> obtenerfechahora() async {
   }
 }
 
+/// Obtener el ID del usuario almacenado
 Future<int?> obtenerusuarioid() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getInt('usuario_id');
 }
 
+/// Consultar si ya existe entrada registrada
 Future<bool> consultarentrada({required int idusuario, required String fecha}) async {
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -56,6 +63,7 @@ Future<bool> consultarentrada({required int idusuario, required String fecha}) a
   }
 }
 
+/// Registrar la entrada
 Future<bool> registrarentrada({
   required int idusuario,
   required String ip,
@@ -86,6 +94,7 @@ Future<bool> registrarentrada({
   }
 }
 
+/// Registrar la salida
 Future<bool> registrarsalida({
   required int idasistencia,
   required String fechasalida,
@@ -93,7 +102,7 @@ Future<bool> registrarsalida({
   required String ipsalida,
   required String bssidsalida,
   required String uuidsalida,
-  required String actividades,
+  required String actividades, required int idusuario, required String ip, required String bssid, required String uuid,
 }) async {
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -119,5 +128,54 @@ Future<bool> registrarsalida({
            json.decode(response.body)['success'] == true;
   } catch (_) {
     return false;
+  }
+}
+
+///////////////////////////////
+/// FUNCIONES DE DISPOSITIVO ///
+///////////////////////////////
+
+Future<String> obtenerip() async {
+  try {
+    final info = NetworkInfo();
+    final ip = await info.getWifiIP();
+    return ip ?? 'No disponible';
+  } catch (e) {
+    print('Error al obtener IP: $e');
+    return 'Error';
+  }
+}
+
+Future<String> obtenerbssid() async {
+  try {
+    final canScan = await WiFiScan.instance.canStartScan();
+    if (canScan == CanStartScan.yes) {
+      await WiFiScan.instance.startScan();
+      await Future.delayed(const Duration(seconds: 2));
+      final bssid = await NetworkInfo().getWifiBSSID();
+      return bssid ?? 'No disponible';
+    } else {
+      return 'Permiso denegado';
+    }
+  } catch (e) {
+    print('Error al obtener BSSID: $e');
+    return 'Error';
+  }
+}
+
+Future<String> obteneruuid() async {
+  try {
+    final deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.id;
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.identifierForVendor ?? 'No disponible';
+    }
+    return 'Plataforma desconocida';
+  } catch (e) {
+    print('Error al obtener UUID: $e');
+    return 'Error';
   }
 }
