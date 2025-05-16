@@ -86,12 +86,72 @@ switch ($accion) {
 
     case 'guardarentrada':
         //guardar en la db la entrada
-        $result = $conn->query("INSERT INTO asistencia(usuario,fechaentrada,horaentrada y lo demas hasta uuidentrada) VALUES");
+        //$result = $conn->query("INSERT INTO asistencia(usuario,fechaentrada,horaentrada y lo demas hasta uuidentrada) VALUES");
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (
+            isset($data['usuario']) &&
+            isset($data['ipentrada']) &&
+            isset($data['bssidentrada']) &&
+            isset($data['uuidentrada'])
+        ) {
+            $usuario = $conn->real_escape_string($data['usuario']);
+            $ipentrada = $conn->real_escape_string($data['ipentrada']);
+            $bssidentrada = $conn->real_escape_string($data['bssidentrada']);
+            $uuidentrada = $conn->real_escape_string($data['uuidentrada']);
+
+            // Fecha y hora del servidor
+            $fechaentrada = date("Y-m-d");
+            $horaentrada = date("H:i:s");
+
+            $sql = "INSERT INTO asistencia (usuario, fechaentrada, horaentrada, ipentrada, bssidentrada, uuidentrada)
+                    VALUES ('$usuario', '$fechaentrada', '$horaentrada', '$ipentrada', '$bssidentrada', '$uuidentrada')";
+
+            if ($conn->query($sql)) {
+                echo json_encode(['success' => true, 'message' => 'Entrada registrada correctamente']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Error al registrar entrada', 'error' => $conn->error]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Faltan datos requeridos']);
+        }
         break;
 
     case 'guardarsalida':
         //idasistencia=obtener el id que regresaconsultarentrada,
-        $result = $conn->query("UPDATE asistencia SET todos los valores de salida WHERE id='$idasistencia'");
+        //result = $conn->query("UPDATE asistencia SET todos los valores de salida WHERE id='$idasistencia'");
+         $data = json_decode(file_get_contents("php://input"), true);
+        if (
+            isset($data['id']) && isset($data['fechasalida']) && isset($data['horasalida']) &&
+            isset($data['ipsalida']) && isset($data['bssidsalida']) &&
+            isset($data['uuidsalida']) && isset($data['actividades'])
+        ) {
+            $id = $conn->real_escape_string($data['id']); // id de la fila en la tabla asistencia
+            $fechasalida = $conn->real_escape_string($data['fechasalida']);
+            $horasalida = $conn->real_escape_string($data['horasalida']);
+            $ipsalida = $conn->real_escape_string($data['ipsalida']);
+            $bssidsalida = $conn->real_escape_string($data['bssidsalida']);
+            $uuidsalida = $conn->real_escape_string($data['uuidsalida']);
+            $actividades = $conn->real_escape_string($data['actividades']);
+            
+            // Actualizar la fila existente
+            $sql = "UPDATE asistencia SET 
+                        fechasalida='$fechasalida',
+                        horasalida='$horasalida',
+                        ipsalida='$ipsalida',
+                        bssidsalida='$bssidsalida',
+                        uuidsalida='$uuidsalida',
+                        actividades='$actividades'
+                    WHERE id='$id'";
+
+            if ($conn->query($sql)) {
+                echo json_encode(['success' => true, 'message' => 'Salida registrada correctamente']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al registrar salida', 'error' => $conn->error]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Datos incompletos para registrar salida']);
+        }
         break;
 
     case 'GET':
