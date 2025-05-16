@@ -6,9 +6,9 @@ import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wifi_scan/wifi_scan.dart';  
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 class entrada extends StatefulWidget {
   final String nombreusuario;
@@ -16,10 +16,10 @@ class entrada extends StatefulWidget {
   const entrada({super.key, required this.nombreusuario});
 
   @override
-  State<entrada> createState() => _entradaState();
+  State<entrada> createState() => _EntradaState();
 }
 
-class _entradaState extends State<entrada> {
+class _EntradaState extends State<entrada> {
   late TextEditingController fechacontroller;
   late TextEditingController horacontroller;
   late TextEditingController ipcontroller;
@@ -27,6 +27,7 @@ class _entradaState extends State<entrada> {
   late TextEditingController uuicontroller;
   late TextEditingController idusuariocontroller;
   late TextEditingController nombreusuariocontroller;
+  final NetworkInfo _networkInfo = NetworkInfo();
 
   @override
   void initState() {
@@ -39,9 +40,14 @@ class _entradaState extends State<entrada> {
     idusuariocontroller = TextEditingController();
     nombreusuariocontroller = TextEditingController();
     
+    _solicitarPermisos();
     _cargardatosdispositivo();
     _obtenerfechahoraservidor();
     _cargardatosusuario();
+  }
+
+  Future<void> _solicitarPermisos() async {
+    await Permission.locationWhenInUse.request();
   }
 
   Future<void> _cargardatosusuario() async {
@@ -58,80 +64,66 @@ class _entradaState extends State<entrada> {
   }
   
   Future<void> _cargardatosdispositivo() async {
-  // Obtener IP
-  final ip = await NetworkInfo().getWifiIP() ?? 'No disponible';
-  
-  // Obtener BSSID (Nueva implementación con wifi_scan)
-  String bssid = 'No disponible';
-  try {
-    final can = await WiFiScan.instance.canStartScan();
-    if (can == CanStartScan.yes) {
-      final result = await WiFiScan.instance.getScannedResults();
-      if (result.isNotEmpty) bssid = result.first.bssid;
-    }
-  } catch (e) {
-    print('Error BSSID: $e');
-  }
+    String ip = 'No disponible';
+    String bssid = 'No disponible';
+    String uuid = 'No disponible';
+    
+    try {
+      ip = await _networkInfo.getWifiIP() ?? 'No disponible';
+      bssid = await _networkInfo.getWifiBSSID() ?? 'No disponible';
 
-  // Obtener UUID (Implementación corregida)
-  String uuid = 'No disponible';
-  try {
-    final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      uuid = androidInfo.id;
-    } else if (Platform.isIOS) {
-      final iosInfo = await deviceInfo.iosInfo;
-      uuid = iosInfo.identifierForVendor ?? 'No disponible';
+      final deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        uuid = (await deviceInfo.androidInfo).id;
+      } else if (Platform.isIOS) {
+        uuid = (await deviceInfo.iosInfo).identifierForVendor ?? 'No disponible';
+      }
+    } catch (e) {
+      print('Error en datos del dispositivo: $e');
     }
-  } catch (e) {
-    print('Error UUID: $e');
-  }
 
-  if (mounted) {
-    setState(() {
-      ipcontroller.text = ip;
-      bssidcontroller.text = bssid;
-      uuicontroller.text = uuid;
-    });
+    if (mounted) {
+      setState(() {
+        ipcontroller.text = ip;
+        bssidcontroller.text = bssid;
+        uuicontroller.text = uuid;
+      });
+    }
   }
-}
 
   Future<void> _obtenerfechahoraservidor() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final servidor = prefs.getString('direccion_servidor') ?? 'http://localhost';
-      final url = Uri.parse('$servidor/api.php?accion=fechahora'); // ← Asegúrate que el path coincida
+      final url = Uri.parse('$servidor/api.php?accion=fechahora');
 
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        if (data['success']) {
+        if (data['success'] == true) {
           if (mounted) {
             setState(() {
-              fechacontroller.text = data['fecha'] ?? '';
-              horacontroller.text = data['hora']?.substring(0, 5) ?? ''; // hh:mm
+              fechacontroller.text = data['fecha']?.toString() ?? '';
+              final horaCompleta = data['hora']?.toString() ?? '';
+              horacontroller.text = horaCompleta.length >= 5 
+                  ? horaCompleta.substring(0, 5) 
+                  : '';
             });
           }
-        } else {
-          print('Error del servidor: ${data['message']}');
         }
-      } else {
-        print('Error HTTP: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error en la solicitud: $e');
+      print('Error al obtener fecha/hora: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ENTRADA', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: const Text('ENTRADA', 
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -157,7 +149,9 @@ class _entradaState extends State<entrada> {
                   Estilosbotones.btndanger("REGRESAR", () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => escritorio(nombreusuario: widget.nombreusuario)),
+                      MaterialPageRoute(
+                          builder: (context) => escritorio(
+                              nombreusuario: widget.nombreusuario)),
                     );
                   }),
                 ],
@@ -176,7 +170,8 @@ class _entradaState extends State<entrada> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(etiqueta, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(etiqueta, 
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
           TextField(
             controller: controlador,
