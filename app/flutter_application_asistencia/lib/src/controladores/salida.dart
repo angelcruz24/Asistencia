@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 class salidacontroller {
+  final TextEditingController idusuariocontroller = TextEditingController();
   final TextEditingController usuariocontroller = TextEditingController();
   final TextEditingController fechasalidacontroller = TextEditingController();
   final TextEditingController horasalidacontroller = TextEditingController();
@@ -13,6 +14,7 @@ class salidacontroller {
   void registrarSalida() {
     // Aquí puedes poner la lógica de registrar salida
     debugPrint("Salida registrada:");
+    debugPrint("ID Usuario: ${idusuariocontroller.text}");
     debugPrint("Usuario: ${usuariocontroller.text}");
     debugPrint("Fecha: ${fechasalidacontroller.text}");
     debugPrint("Hora: ${horasalidacontroller.text}");
@@ -23,6 +25,7 @@ class salidacontroller {
   }
 
   void dispose() {
+    idusuariocontroller.dispose();
     usuariocontroller.dispose();
     fechasalidacontroller.dispose();
     horasalidacontroller.dispose();
