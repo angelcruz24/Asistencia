@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_application_asistencia/config.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class logincontroller {
   final TextEditingController controllerusuario = TextEditingController();
@@ -48,6 +49,11 @@ class logincontroller {
         final data = json.decode(response.body);
 
         if (data['success']) {
+          final idUsuario = data['id']; 
+          final nombreUsuario = controllerusuario.text.trim();
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('usuario_id', idUsuario);
+          await prefs.setString('usuario_nombre', nombreUsuario);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => escritorio(nombreusuario: controllerusuario.text.trim())),

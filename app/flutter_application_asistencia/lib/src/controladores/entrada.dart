@@ -1,66 +1,57 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/servicios/funciones.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-class EntradaController {
-  final TextEditingController fechaController;
-  final TextEditingController horaController;
-  final TextEditingController ipController;
-  final TextEditingController bssidController;
-  final TextEditingController uuidController;
+class entradacontroller {
+  final TextEditingController fechacontroller;
+  final TextEditingController horacontroller;
+  final TextEditingController ipcontroller;
+  final TextEditingController bssidcontroller;
+  final TextEditingController uuidcontroller;
+  final TextEditingController nombreusuariocontroller; 
+  final TextEditingController idusuariocontroller;
 
-  EntradaController({
-    required this.fechaController,
-    required this.horaController,
-    required this.ipController,
-    required this.bssidController,
-    required this.uuidController,
+  entradacontroller({
+    required this.fechacontroller,
+    required this.horacontroller,
+    required this.ipcontroller,
+    required this.bssidcontroller,
+    required this.uuidcontroller,
+    required this.nombreusuariocontroller, 
+    required this.idusuariocontroller,
   });
 
   /// Método principal para cargar todos los datos en la vista
   Future<void> cargarDatos() async {
-    await _obtenerFechaHoraServidor();
-    await _obtenerDatosDispositivo();
+    await _cargardatosusuario();
+    await _obtenerfechahoraservidor();
+    await _obtenerdatosdispositivo();
+  }
+
+  Future<void> _cargardatosusuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idusuario = prefs.getInt('usuario_id') ?? 0;
+    final nombreusuario = prefs.getString('usuario_nombre') ?? '';
+
+
+    idusuariocontroller.text = idusuario.toString();
+    nombreusuariocontroller.text = nombreusuario;
   }
 
   /// Carga la fecha y hora del servidor usando la dirección guardada en SharedPreferences
-  Future<void> _obtenerFechaHoraServidor() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final baseUrl = prefs.getString('base_url');
-
-      if (baseUrl == null || baseUrl.isEmpty) {
-        fechaController.text = "No URL";
-        horaController.text = "No URL";
-        return;
-      }
-
-      final url = Uri.parse('${baseUrl}fecha_hora.php');
-      final response = await http.get(url).timeout(const Duration(seconds: 5));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        fechaController.text = data['fecha'] ?? 'Fecha inválida';
-        horaController.text = data['hora'] ?? 'Hora inválida';
-      } else {
-        fechaController.text = "Error ${response.statusCode}";
-        horaController.text = "Error ${response.statusCode}";
-      }
-    } on TimeoutException {
-      fechaController.text = "Tiempo agotado";
-      horaController.text = "Tiempo agotado";
-    } catch (e) {
-      fechaController.text = "Error";
-      horaController.text = "Error";
-    }
+  Future<void> _obtenerfechahoraservidor() async {
+    final datos = await obtenerfechahora();
+    fechacontroller.text = datos['fecha'] ?? 'Error';
+    horacontroller.text = datos['hora'] ?? 'Error';
   }
 
   /// Obtiene datos del dispositivo: IP, BSSID y UUID persistente
-  Future<void> _obtenerDatosDispositivo() async {
+  Future<void> _obtenerdatosdispositivo() async {
     final info = NetworkInfo();
     final ip = await info.getWifiIP();
     final bssid = await info.getWifiBSSID();
@@ -73,8 +64,8 @@ class EntradaController {
       await prefs.setString("uuid", uuid);
     }
 
-    ipController.text = ip ?? "Desconocida";
-    bssidController.text = bssid ?? "Desconocido";
-    uuidController.text = uuid;
+    ipcontroller.text = ip ?? "Desconocida";
+    bssidcontroller.text = bssid ?? "Desconocido";
+    uuidcontroller.text = uuid;
   }
 }
