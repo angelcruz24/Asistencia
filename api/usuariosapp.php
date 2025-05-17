@@ -52,7 +52,7 @@ switch ($accion) {
     case 'fechahora':
         header('Content-Type: application/json');
         //obtener la fecha y hora acutal del servidor. y regresarla como json para usarla en la app
-        //date_default_timezone_set('America/Mexico_City'); // Solo se coloca si necesitamos solo para un servidor 
+        date_default_timezone_set('America/Mexico_City'); 
         $fecha = date("Y-m-d");
         $hora = date("H:i:s");
         echo json_encode([
