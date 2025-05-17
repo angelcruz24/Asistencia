@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/servicios/funciones.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/entrada.dart';
@@ -47,11 +48,44 @@ class escritorio extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Botón REGISTRAR ENTRADA
-              Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => entrada(nombreusuario: nombreusuario)),
-                );
+              Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () async {
+                final idusuario = await obtenerusuarioid();
+                final fechahora = await obtenerfechahora();
+                final fecha = fechahora['fecha'] ?? '';
+
+                if (idusuario == null || fecha.isEmpty) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Error'),
+                      content: const Text('No se pudo obtener el ID de usuario o la fecha'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
+                final yaTieneEntrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
+
+                if (yaTieneEntrada) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Entrada ya registrada'),
+                      content: const Text('Ya has registrado tu entrada hoy.'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Aceptar')),
+                      ],
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => entrada(nombreusuario: nombreusuario)),
+                  );
+                }
               }),
               const SizedBox(height: 20),
 
