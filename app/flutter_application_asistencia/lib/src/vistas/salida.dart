@@ -1,15 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/src/controladores/salida.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class salida extends StatefulWidget {
   final String nombreusuario;
@@ -21,88 +15,50 @@ class salida extends StatefulWidget {
 }
 
 class _SalidaState extends State<salida> {
-  final salidacontroller controller = salidacontroller();
-  final NetworkInfo _networkInfo = NetworkInfo();
+  late TextEditingController idusuariocontroller;
+  late TextEditingController usuariocontroller;
+  late TextEditingController fechasalidacontroller;
+  late TextEditingController horasalidacontroller;
+  late TextEditingController ipsalidacontroller;
+  late TextEditingController bssidsalidadcontroller;
+  late TextEditingController uuisalidacontroller;
+  late TextEditingController actividadescontroller;
+  late salidacontroller controller;
 
   @override
   void initState() {
     super.initState();
+
+    idusuariocontroller = TextEditingController();
+    usuariocontroller = TextEditingController();
+    fechasalidacontroller = TextEditingController();
+    horasalidacontroller = TextEditingController();
+    ipsalidacontroller = TextEditingController();
+    bssidsalidadcontroller = TextEditingController();
+    uuisalidacontroller = TextEditingController();
+    actividadescontroller = TextEditingController();
+
+    controller = salidacontroller(
+      idusuariocontroller: idusuariocontroller, 
+      usuariocontroller: usuariocontroller, 
+      fechasalidacontroller: fechasalidacontroller, 
+      horasalidacontroller: horasalidacontroller, 
+      ipsalidacontroller: ipsalidacontroller, 
+      bssidsalidadcontroller: bssidsalidadcontroller, 
+      uuisalidacontroller: uuisalidacontroller, 
+      actividadescontroller: actividadescontroller);
+
     _solicitarPermisos();
-    _cargarDatosDispositivo();
-    _cargarDatosUsuario();
-    _obtenerfechahoraservidor();
+    _cargarDatos();
   }
 
   Future<void> _solicitarPermisos() async {
     await ph.Permission.locationWhenInUse.request();
   }
 
-  Future<void> _cargarDatosUsuario() async {
-    final prefs = await SharedPreferences.getInstance();
-    final idusuario = prefs.getInt('usuarioid') ?? 0;
-    final nombreusuario = prefs.getString('usuarionombre') ?? '';
-
-    if (mounted) {
-      setState(() {
-        controller.idusuariocontroller.text = idusuario.toString();
-        controller.usuariocontroller.text = nombreusuario;
-      });
-    }
-  }
-
-  Future<void> _cargarDatosDispositivo() async {
-    String ip = 'No disponible';
-    String bssid = 'No disponible';
-    String uuid = 'No disponible';
-
-    try {
-      ip = await _networkInfo.getWifiIP() ?? 'No disponible';
-      bssid = await _networkInfo.getWifiBSSID() ?? 'No disponible';
-
-      final deviceInfo = DeviceInfoPlugin();
-      if (Platform.isAndroid) {
-        uuid = (await deviceInfo.androidInfo).id;
-      } else if (Platform.isIOS) {
-        uuid = (await deviceInfo.iosInfo).identifierForVendor ?? 'No disponible';
-      }
-    } catch (e) {
-      print('Error obteniendo datos del dispositivo: $e');
-    }
-
-    if (mounted) {
-      setState(() {
-        controller.ipsalidacontroller.text = ip;
-        controller.bssidsalidadcontroller.text = bssid;
-        controller.uuisalidacontroller.text = uuid;
-      });
-    }
-  }
-
-  Future<void> _obtenerfechahoraservidor() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final servidor = prefs.getString('direccion_servidor') ?? 'http://localhost';
-      final url = Uri.parse('$servidor/api.php?accion=fechahora');
-
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['success'] == true) {
-          if (mounted) {
-            setState(() {
-              controller.fechasalidacontroller.text = data['fecha']?.toString() ?? '';
-              final horaCompleta = data['hora']?.toString() ?? '';
-              controller.horasalidacontroller.text = horaCompleta.length >= 5
-                  ? horaCompleta.substring(0, 5)
-                  : '';
-            });
-          }
-        }
-      }
-    } catch (e) {
-      print('Error al obtener fecha/hora: $e');
-    }
+  Future<void> _cargarDatos() async {
+    await controller.cargarDatos();
+    if (mounted) setState(() {}); // Refrescar la UI con los nuevos valores
   }
 
   @override
