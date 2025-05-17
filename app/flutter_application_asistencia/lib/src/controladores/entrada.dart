@@ -59,20 +59,12 @@ class entradacontroller {
 
   /// Obtiene datos del dispositivo: IP, BSSID y UUID persistente
   Future<void> _obtenerdatosdispositivo() async {
-    final info = NetworkInfo();
-    final ip = await info.getWifiIP();
-    final bssid = await info.getWifiBSSID();
+  final ip = await obtenerip();       // ← desde funciones.dart
+  final bssid = await obtenerbssid(); // ← desde funciones.dart
+  final uuid = await obteneruuid();   // ← desde funciones.dart
 
-    final prefs = await SharedPreferences.getInstance();
-    String? uuid = prefs.getString("uuid");
-
-    if (uuid == null) {
-      uuid = const Uuid().v4();
-      await prefs.setString("uuid", uuid);
-    }
-
-    ipcontroller.text = ip ?? "Desconocida";
-    bssidcontroller.text = bssid ?? "Desconocido";
-    uuidcontroller.text = uuid;
+  ipcontroller.text = ip;
+  bssidcontroller.text = bssid;
+  uuidcontroller.text = uuid;
   }
 }

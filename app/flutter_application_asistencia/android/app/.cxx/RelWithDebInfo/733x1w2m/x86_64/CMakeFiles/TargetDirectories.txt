@@ -1,0 +1,2 @@
+C:/Users/REGINA/Downloads/asistencia/app/flutter_application_asistencia/android/app/.cxx/RelWithDebInfo/733x1w2m/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/REGINA/Downloads/asistencia/app/flutter_application_asistencia/android/app/.cxx/RelWithDebInfo/733x1w2m/x86_64/CMakeFiles/rebuild_cache.dir
