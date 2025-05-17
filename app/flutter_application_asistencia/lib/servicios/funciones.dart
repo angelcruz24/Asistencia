@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter_application_asistencia/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -10,13 +11,11 @@ import 'package:wifi_scan/wifi_scan.dart';
 /// Obtener fecha y hora desde la API
 Future<Map<String, String>> obtenerfechahora() async {
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final baseUrl = prefs.getString('base_url');
-    if (baseUrl == null || baseUrl.isEmpty) {
+    if (AppConfig.baseUrl.isEmpty) {
       return {'fecha': 'No URL', 'hora': 'No URL'};
     }
 
-    final url = Uri.parse('$baseUrl?accion=fechahora');
+    final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=fechahora');
     final response = await http.get(url).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
@@ -36,17 +35,14 @@ Future<Map<String, String>> obtenerfechahora() async {
 /// Obtener el ID del usuario almacenado
 Future<int?> obtenerusuarioid() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getInt('usuario_id');
+  return prefs.getInt('usuarioid');
 }
 
 /// Consultar si ya existe entrada registrada
 Future<bool> consultarentrada({required int idusuario, required String fecha}) async {
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final baseUrl = prefs.getString('base_url');
-    if (baseUrl == null || baseUrl.isEmpty) return false;
-
-    final url = Uri.parse('$baseUrl?accion=consultarentrada');
+    if (AppConfig.baseUrl.isEmpty) return false;
+    final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=consultarentrada');
     final response = await http.post(
       url,
       body: jsonEncode({'idusuario': idusuario, 'fechaentrada': fecha}),
@@ -66,20 +62,22 @@ Future<bool> consultarentrada({required int idusuario, required String fecha}) a
 /// Registrar la entrada
 Future<bool> registrarentrada({
   required int idusuario,
+  required String fechaentrada,
+  required String horaentrada,
   required String ip,
   required String bssid,
   required String uuid,
 }) async {
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final baseUrl = prefs.getString('base_url');
-    if (baseUrl == null || baseUrl.isEmpty) return false;
+    if (AppConfig.baseUrl.isEmpty) return false;
 
-    final url = Uri.parse('$baseUrl?accion=guardarentrada');
+    final url = Uri.parse('${AppConfig.baseUrl}?accion=guardarentrada');
     final response = await http.post(
       url,
       body: jsonEncode({
         'usuario': idusuario,
+        'fechaentrada': fechaentrada,
+        'horaentrada': horaentrada,
         'ipentrada': ip,
         'bssidentrada': bssid,
         'uuidentrada': uuid,
@@ -102,14 +100,12 @@ Future<bool> registrarsalida({
   required String ipsalida,
   required String bssidsalida,
   required String uuidsalida,
-  required String actividades, required int idusuario, required String ip, required String bssid, required String uuid,
+  required String actividades,
 }) async {
   try {
-    final prefs = await SharedPreferences.getInstance();
-    final baseUrl = prefs.getString('base_url');
-    if (baseUrl == null || baseUrl.isEmpty) return false;
+    if (AppConfig.baseUrl.isEmpty) return false;
 
-    final url = Uri.parse('$baseUrl?accion=guardarsalida');
+    final url = Uri.parse('${AppConfig.baseUrl}?accion=guardarsalida');
     final response = await http.post(
       url,
       body: jsonEncode({
