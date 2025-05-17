@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/config.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
@@ -93,28 +94,24 @@ class _EntradaState extends State<entrada> {
 
   Future<void> _obtenerfechahoraservidor() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final servidor = prefs.getString('direccion_servidor') ?? 'http://localhost';
-      final url = Uri.parse('$servidor/api.php?accion=fechahora');
-
+      final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=fechahora');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['success'] == true) {
-          if (mounted) {
-            setState(() {
-              fechacontroller.text = data['fecha']?.toString() ?? '';
-              final horaCompleta = data['hora']?.toString() ?? '';
-              horacontroller.text = horaCompleta.length >= 5 
-                  ? horaCompleta.substring(0, 5) 
-                  : '';
-            });
-          }
+        final data = json.decode(response.body);
+        if (data['success']) {
+          setState(() {
+            fechacontroller.text = data['fecha'];
+            horacontroller.text = data['hora'];
+          });
+        } else {
+          print('Error desde el servidor: ${data['message']}');
         }
+      } else {
+        print('Error de red: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error al obtener fecha/hora: $e');
+      print('Error al obtener fecha y hora del servidor: $e');
     }
   }
 
