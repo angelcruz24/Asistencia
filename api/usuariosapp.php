@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once "conexion.php";
 
-$accion = $_GET['accion'];
+$accion = $_GET['accion'] ?? $_POST['accion'] ?? '';
 
 switch ($accion) {
     case 'ping':
@@ -50,6 +50,7 @@ switch ($accion) {
         break;
 
     case 'fechahora':
+        header('Content-Type: application/json');
         //obtener la fecha y hora acutal del servidor. y regresarla como json para usarla en la app
         //date_default_timezone_set('America/Mexico_City'); // Solo se coloca si necesitamos solo para un servidor 
         $fecha = date("Y-m-d");
@@ -89,10 +90,8 @@ switch ($accion) {
         //$result = $conn->query("INSERT INTO asistencia(usuario,fechaentrada,horaentrada y lo demas hasta uuidentrada) VALUES");
         $data = json_decode(file_get_contents("php://input"), true);
         if (
-            isset($data['usuario']) &&
-            isset($data['ipentrada']) &&
-            isset($data['bssidentrada']) &&
-            isset($data['uuidentrada'])
+           isset($data['usuario'], $data['fechaentrada'], $data['horaentrada'], 
+              $data['ipentrada'], $data['bssidentrada'], $data['uuidentrada'])
         ) {
             $usuario = $conn->real_escape_string($data['usuario']);
             $ipentrada = $conn->real_escape_string($data['ipentrada']);
