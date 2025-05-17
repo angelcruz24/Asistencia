@@ -46,8 +46,15 @@ class entradacontroller {
   /// Carga la fecha y hora del servidor usando la dirección guardada en SharedPreferences
   Future<void> _obtenerfechahoraservidor() async {
     final datos = await obtenerfechahora();
-    fechacontroller.text = datos['fecha'] ?? 'Error';
-    horacontroller.text = datos['hora'] ?? 'Error';
+    print("Datos desde el servidor: $datos");
+
+    if (datos['fecha'] != 'Error' && datos['hora'] != 'Error') {
+      fechacontroller.text = datos['fecha'] ?? 'SIN FECHA';
+      horacontroller.text = datos['hora'] ?? 'SIN HORA';
+    } else {
+      fechacontroller.text = 'ERROR';
+      horacontroller.text = 'ERROR';
+    }
   }
 
   /// Obtiene datos del dispositivo: IP, BSSID y UUID persistente
