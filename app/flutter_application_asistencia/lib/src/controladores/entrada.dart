@@ -63,4 +63,19 @@ class entradacontroller {
   bssidcontroller.text = bssid;
   uuidcontroller.text = uuid;
   }
+
+  Future<bool> registrar() async {
+    final idusuario = await obtenerusuarioid(); 
+    if (idusuario == null) return false;
+
+    return await registrarentrada(
+      idusuario: idusuario,
+      fechaentrada: fechacontroller.text,
+      horaentrada: horacontroller.text,
+      ip: ipcontroller.text,
+      bssid: bssidcontroller.text,
+      uuid: uuidcontroller.text,
+    );
+  }
+
 }

@@ -87,8 +87,17 @@ class _EntradaState extends State<entrada> {
             Center(
               child: Column(
                 children: [
-                  Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () {
-                    // Lógica para guardar los datos
+                  Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () async {
+                    bool exito = await controller.registrar();
+                    if (exito) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Entrada registrada correctamente')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Error al registrar entrada')),
+                      );
+                    }
                   }),
                   const SizedBox(height: 15),
                   Estilosbotones.btndanger("REGRESAR", () {
