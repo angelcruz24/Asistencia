@@ -89,8 +89,21 @@ class _SalidaState extends State<salida> {
             Center(
               child: Column(
                 children: [
-                  Estilosbotones.btnsuccess("REGISTRAR SALIDA", () {
-                    controller.registrarSalida();
+                  Estilosbotones.btnsuccess("REGISTRAR SALIDA", () async {
+                    bool exito = await controller.registrarsalidaapi();
+
+                    if (exito) {
+                      // Mostrar mensaje de éxito
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Salida registrada correctamente')),
+                      );
+                      // Opcional: navegar o limpiar campos
+                    } else {
+                      // Mostrar mensaje de error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Error al registrar salida')),
+                      );
+                    }
                   }),
                   const SizedBox(height: 15),
                   Estilosbotones.btndanger("REGRESAR", () {

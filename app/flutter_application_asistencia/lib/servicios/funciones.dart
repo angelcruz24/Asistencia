@@ -71,7 +71,9 @@ Future<bool> registrarentrada({
   try {
     if (AppConfig.baseUrl.isEmpty) return false;
 
-    final url = Uri.parse('${AppConfig.baseUrl}?accion=guardarentrada');
+    final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=guardarentrada');
+    print('URL: $url');
+    print('Enviando datos al servidor...');
     final response = await http.post(
       url,
       body: jsonEncode({
@@ -85,9 +87,13 @@ Future<bool> registrarentrada({
       headers: {'Content-Type': 'application/json'},
     );
 
+    print('Código de estado: ${response.statusCode}');
+    print('Respuesta del servidor: ${response.body}');
+
     return response.statusCode == 200 &&
            json.decode(response.body)['success'] == true;
-  } catch (_) {
+  } catch (e) {
+    print('Error en registrarentrada: $e');
     return false;
   }
 }
@@ -105,7 +111,9 @@ Future<bool> registrarsalida({
   try {
     if (AppConfig.baseUrl.isEmpty) return false;
 
-    final url = Uri.parse('${AppConfig.baseUrl}?accion=guardarsalida');
+    final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=guardarsalida');
+    print('URL: $url');
+    print('Enviando datos al servidor...');
     final response = await http.post(
       url,
       body: jsonEncode({
@@ -120,9 +128,13 @@ Future<bool> registrarsalida({
       headers: {'Content-Type': 'application/json'},
     );
 
+    print('Código de estado: ${response.statusCode}');
+    print('Respuesta del servidor: ${response.body}');
+
     return response.statusCode == 200 &&
            json.decode(response.body)['success'] == true;
-  } catch (_) {
+  } catch (e) {
+    print('Error en registrarsalida: $e');
     return false;
   }
 }
