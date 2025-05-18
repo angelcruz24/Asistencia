@@ -67,9 +67,9 @@ class escritorio extends StatelessWidget {
                   return;
                 }
 
-                final yaTieneEntrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
+                final yatieneentrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
 
-                if (yaTieneEntrada) {
+                if (yatieneentrada) {
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
@@ -90,11 +90,44 @@ class escritorio extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Botón REGISTRAR SALIDA
-              Estilosbotones.btnwarning("REGISTRAR SALIDA", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => salida(nombreusuario: nombreusuario)),
-                );// Acción para registrar salida
+              Estilosbotones.btnwarning("REGISTRAR SALIDA", () async {
+                final idusuario = await obtenerusuarioid();
+                final fechahora = await obtenerfechahora();
+                final fecha = fechahora['fecha'] ?? '';
+
+                if (idusuario == null || fecha.isEmpty) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Error'),
+                      content: const Text('No se pudo obtener el ID de usuario o la fecha'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
+                final tieneentrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
+
+                if (!tieneentrada) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('No hay entrada registrada'),
+                      content: const Text('Primero debes registrar la entrada para poder registrar la salida.'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Aceptar')),
+                      ],
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => salida(nombreusuario: nombreusuario)),
+                  );
+                }
               }),
               const SizedBox(height: 20),
 

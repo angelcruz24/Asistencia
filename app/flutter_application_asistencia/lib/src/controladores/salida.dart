@@ -66,17 +66,31 @@ class salidacontroller {
   uuisalidacontroller.text = uuid;
   }
 
-  void registrarSalida() {
-    // Aquí puedes poner la lógica de registrar salida
-    debugPrint("Salida registrada:");
-    debugPrint("ID Usuario: ${idusuariocontroller.text}");
-    debugPrint("Usuario: ${usuariocontroller.text}");
-    debugPrint("Fecha: ${fechasalidacontroller.text}");
-    debugPrint("Hora: ${horasalidacontroller.text}");
-    debugPrint("IP: ${ipsalidacontroller.text}");
-    debugPrint("BSSID: ${bssidsalidadcontroller.text}");
-    debugPrint("UUI: ${uuisalidacontroller.text}");
-    debugPrint("Actividades: ${actividadescontroller.text}");
+  Future<bool> registrarsalidaapi() async {
+    final id = int.tryParse(idusuariocontroller.text) ?? 0;
+    final fecha = fechasalidacontroller.text;
+    final hora = horasalidacontroller.text;
+    final ip = ipsalidacontroller.text;
+    final bssid = bssidsalidadcontroller.text;
+    final uuid = uuisalidacontroller.text;
+    final actividades = actividadescontroller.text;
+
+    if (id == 0 || fecha.isEmpty || hora.isEmpty) {
+      return false; // datos inválidos
+    }
+
+    // Llamas a la función real que hace el POST
+    final exito = await registrarsalida(
+      idasistencia: id,
+      fechasalida: fecha,
+      horasalida: hora,
+      ipsalida: ip,
+      bssidsalida: bssid,
+      uuidsalida: uuid,
+      actividades: actividades,
+    );
+
+    return exito;
   }
 
   void dispose() {
