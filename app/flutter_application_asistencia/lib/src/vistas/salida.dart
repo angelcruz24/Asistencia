@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/servicios/funciones.dart';
 import 'package:flutter_application_asistencia/src/controladores/salida.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
@@ -39,13 +40,13 @@ class _SalidaState extends State<salida> {
     actividadescontroller = TextEditingController();
 
     controller = salidacontroller(
-      idusuariocontroller: idusuariocontroller, 
-      usuariocontroller: usuariocontroller, 
-      fechasalidacontroller: fechasalidacontroller, 
-      horasalidacontroller: horasalidacontroller, 
-      ipsalidacontroller: ipsalidacontroller, 
-      bssidsalidadcontroller: bssidsalidadcontroller, 
-      uuisalidacontroller: uuisalidacontroller, 
+      idusuariocontroller: idusuariocontroller,
+      usuariocontroller: usuariocontroller,
+      fechasalidacontroller: fechasalidacontroller,
+      horasalidacontroller: horasalidacontroller,
+      ipsalidacontroller: ipsalidacontroller,
+      bssidsalidadcontroller: bssidsalidadcontroller,
+      uuisalidacontroller: uuisalidacontroller,
       actividadescontroller: actividadescontroller);
 
     _solicitarPermisos();
@@ -90,20 +91,15 @@ class _SalidaState extends State<salida> {
               child: Column(
                 children: [
                   Estilosbotones.btnsuccess("REGISTRAR SALIDA", () async {
-                    bool exito = await controller.registrarsalidaapi();
-
-                    if (exito) {
-                      // Mostrar mensaje de éxito
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Salida registrada correctamente')),
-                      );
-                      // Opcional: navegar o limpiar campos
-                    } else {
-                      // Mostrar mensaje de error
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Error al registrar salida')),
-                      );
-                    }
+                    await registrarsalidas(
+                      context,
+                      fechasalidacontroller,
+                      horasalidacontroller,
+                      ipsalidacontroller,
+                      bssidsalidadcontroller,
+                      uuisalidacontroller,
+                      actividadescontroller,
+                    );
                   }),
                   const SizedBox(height: 15),
                   Estilosbotones.btndanger("REGRESAR", () {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -141,6 +143,139 @@ Future<bool> registrarsalida({
     return false;
   }
 }
+
+
+//MENSAJE DE ENTRADA\\
+void mostrarmensaje({
+  required BuildContext context,
+  required String titulo,
+  required String mensaje,
+  DialogType tipo = DialogType.info,
+}) {
+  AwesomeDialog(
+    context: context,
+    dialogType: tipo,
+    animType: AnimType.bottomSlide,
+    title: titulo,
+    desc: mensaje,
+    btnOkText: "Aceptar",
+    btnOkColor: const Color.fromRGBO(31, 206, 7, 0.658),
+    btnOkOnPress: () {},
+    dismissOnTouchOutside: false,
+  ).show();
+}
+
+Future<Object?> registrar(BuildContext context, dynamic fechacontroller, dynamic horacontroller, dynamic ipcontroller, dynamic bssidcontroller, dynamic uuidcontroller) async {
+  final idusuario = await obtenerusuarioid();
+  if (idusuario == null) {
+    mostrarmensaje(
+      context: context,
+      titulo: "Error",
+      mensaje: "No se pudo obtener el ID del usuario.",
+      tipo: DialogType.error,
+    );
+    return false;
+  }
+
+  final exito = await registrarentrada(
+    idusuario: idusuario,
+    fechaentrada: fechacontroller.text,
+    horaentrada: horacontroller.text,
+    ip: ipcontroller.text,
+    bssid: bssidcontroller.text,
+    uuid: uuidcontroller.text,
+  );
+
+  if (exito != null) {
+    mostrarmensaje(
+      context: context,
+      titulo: "Éxito",
+      mensaje: "Entrada registrada correctamente.",
+      tipo: DialogType.success,
+    );
+  } else {
+    mostrarmensaje(
+      context: context,
+      titulo: "Error",
+      mensaje: "No se pudo registrar la entrada.",
+      tipo: DialogType.error,
+    );
+  }
+
+  return exito;
+}
+
+//MENSAJE DE SALIDA\\
+Future<Object?> registrarsalidas(
+    BuildContext context,
+    dynamic fechasalidacontroller,
+    dynamic horasalidacontroller,
+    dynamic ipsalidacontroller,
+    dynamic bssidsalidadcontroller,
+    dynamic uuisalidacontroller,
+    TextEditingController actividadescontroller) async {
+
+  final prefs = await SharedPreferences.getInstance();
+  final idasistencia = prefs.getInt('idasistencia');
+
+  if (idasistencia == null) {
+    mostrarmensaje(
+      context: context,
+      titulo: "Error",
+      mensaje: "No se encontró el ID de asistencia en SharedPreferences.",
+      tipo: DialogType.error,
+    );
+    return false;
+  }
+
+  final fecha = fechasalidacontroller.text;
+  final hora = horasalidacontroller.text;
+  final ip = ipsalidacontroller.text;
+  final bssid = bssidsalidadcontroller.text;
+  final uuid = uuisalidacontroller.text;
+  final actividades = actividadescontroller.text;
+
+  if (fecha.isEmpty || hora.isEmpty) {
+    mostrarmensaje(
+      context: context,
+      titulo: "Error",
+      mensaje: "Datos de fecha u hora inválidos.",
+      tipo: DialogType.error,
+    );
+    return false;
+  }
+
+  final exito = await registrarsalida(
+    idasistencia: idasistencia,
+    fechasalida: fecha,
+    horasalida: hora,
+    ipsalida: ip,
+    bssidsalida: bssid,
+    uuidsalida: uuid,
+    actividades: actividades,
+  );
+
+  if (exito) {
+    await prefs.remove('idasistencia');
+    mostrarmensaje(
+      context: context,
+      titulo: "Éxito",
+      mensaje: "Salida registrada correctamente.",
+      tipo: DialogType.success,
+    );
+  } else {
+    mostrarmensaje(
+      context: context,
+      titulo: "Error",
+      mensaje: "No se pudo registrar la salida.",
+      tipo: DialogType.error,
+    );
+  }
+
+  return exito;
+}
+
+
 
 ///////////////////////////////
 /// FUNCIONES DE DISPOSITIVO ///

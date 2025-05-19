@@ -1,6 +1,5 @@
-// archivo: entrada.dart
-
 import 'package:flutter/material.dart';
+import 'package:flutter_application_asistencia/servicios/funciones.dart';
 import 'package:flutter_application_asistencia/src/controladores/entrada.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
@@ -89,19 +88,19 @@ class _EntradaState extends State<entrada> {
               child: Column(
                 children: [
                   Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () async {
-                    int? idasistencia = await controller.registrar();
-                    if (idasistencia != null) {
+                    Object? resultado = await registrar(
+                      context,
+                      fechacontroller,
+                      horacontroller,
+                      ipcontroller,
+                      bssidcontroller,
+                      uuicontroller,
+                    );
+
+                    if (resultado != null && resultado is int) {
                       final prefs = await SharedPreferences.getInstance();
-                      await prefs.setInt('idasistencia', idasistencia);
-                      
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Entrada registrada correctamente')),
-                      );
-                      print('ID asistencia generado: $idasistencia');
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Error al registrar entrada')),
-                      );
+                      await prefs.setInt('idasistencia', resultado);
+                      print('ID asistencia generado: $resultado');
                     }
                   }),
                   const SizedBox(height: 15),
