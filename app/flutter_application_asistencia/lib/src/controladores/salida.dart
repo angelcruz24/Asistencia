@@ -67,7 +67,14 @@ class salidacontroller {
   }
 
   Future<bool> registrarsalidaapi() async {
-    final id = int.tryParse(idusuariocontroller.text) ?? 0;
+    final prefs = await SharedPreferences.getInstance();
+    final idasistencia = prefs.getInt('idasistencia');
+
+    if (idasistencia == null) {
+      print('No se encontró el ID de asistencia en SharedPreferences');
+      return false;
+    }
+
     final fecha = fechasalidacontroller.text;
     final hora = horasalidacontroller.text;
     final ip = ipsalidacontroller.text;
@@ -75,13 +82,12 @@ class salidacontroller {
     final uuid = uuisalidacontroller.text;
     final actividades = actividadescontroller.text;
 
-    if (id == 0 || fecha.isEmpty || hora.isEmpty) {
+    if (fecha.isEmpty || hora.isEmpty) {
       return false; // datos inválidos
     }
 
-    // Llamas a la función real que hace el POST
     final exito = await registrarsalida(
-      idasistencia: id,
+      idasistencia: idasistencia,
       fechasalida: fecha,
       horasalida: hora,
       ipsalida: ip,
@@ -89,6 +95,10 @@ class salidacontroller {
       uuidsalida: uuid,
       actividades: actividades,
     );
+     if (exito) {
+      await prefs.remove('idasistencia');
+      print('ID de asistencia eliminado de SharedPreferences');
+    }
 
     return exito;
   }

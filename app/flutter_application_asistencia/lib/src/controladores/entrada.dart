@@ -64,11 +64,11 @@ class entradacontroller {
   uuidcontroller.text = uuid;
   }
 
-  Future<bool> registrar() async {
+  Future<int?> registrar() async {
     final idusuario = await obtenerusuarioid(); 
-    if (idusuario == null) return false;
+    if (idusuario == null) return null;
 
-    return await registrarentrada(
+    final idasistencia = await registrarentrada(
       idusuario: idusuario,
       fechaentrada: fechacontroller.text,
       horaentrada: horacontroller.text,
@@ -76,6 +76,8 @@ class entradacontroller {
       bssid: bssidcontroller.text,
       uuid: uuidcontroller.text,
     );
+
+    return idasistencia; // Devuelve el ID generado si todo fue bien
   }
 
 }

@@ -106,7 +106,8 @@ switch ($accion) {
                     VALUES ('$usuario', '$fechaentrada', '$horaentrada', '$ipentrada', '$bssidentrada', '$uuidentrada')";
 
             if ($conn->query($sql)) {
-                echo json_encode(['success' => true, 'message' => 'Entrada registrada correctamente']);
+                $idasistencia = $conn->insert_id;
+                echo json_encode(['success' => true, 'message' => 'Entrada registrada correctamente', 'id' => $idasistencia]);
             } else {
                 http_response_code(500);
                 echo json_encode(['success' => false, 'message' => 'Error al registrar entrada', 'error' => $conn->error]);

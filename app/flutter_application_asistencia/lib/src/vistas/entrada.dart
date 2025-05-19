@@ -6,6 +6,7 @@ import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class entrada extends StatefulWidget {
   final String nombreusuario;
@@ -88,11 +89,15 @@ class _EntradaState extends State<entrada> {
               child: Column(
                 children: [
                   Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () async {
-                    bool exito = await controller.registrar();
-                    if (exito) {
+                    int? idasistencia = await controller.registrar();
+                    if (idasistencia != null) {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setInt('idasistencia', idasistencia);
+                      
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Entrada registrada correctamente')),
                       );
+                      print('ID asistencia generado: $idasistencia');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Error al registrar entrada')),

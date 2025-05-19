@@ -59,8 +59,8 @@ Future<bool> consultarentrada({required int idusuario, required String fecha}) a
   }
 }
 
-/// Registrar la entrada
-Future<bool> registrarentrada({
+/// Registrar la entrada y obtener el ID generado
+Future<int?> registrarentrada({
   required int idusuario,
   required String fechaentrada,
   required String horaentrada,
@@ -69,11 +69,9 @@ Future<bool> registrarentrada({
   required String uuid,
 }) async {
   try {
-    if (AppConfig.baseUrl.isEmpty) return false;
+    if (AppConfig.baseUrl.isEmpty) return null;
 
     final url = Uri.parse('${AppConfig.baseUrl}usuariosapp.php?accion=guardarentrada');
-    print('URL: $url');
-    print('Enviando datos al servidor...');
     final response = await http.post(
       url,
       body: jsonEncode({
@@ -90,11 +88,16 @@ Future<bool> registrarentrada({
     print('Código de estado: ${response.statusCode}');
     print('Respuesta del servidor: ${response.body}');
 
-    return response.statusCode == 200 &&
-           json.decode(response.body)['success'] == true;
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return data['id'];
+      }
+    }
+    return null;
   } catch (e) {
     print('Error en registrarentrada: $e');
-    return false;
+    return null;
   }
 }
 
