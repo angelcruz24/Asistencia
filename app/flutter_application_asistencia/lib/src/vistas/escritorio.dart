@@ -1,16 +1,17 @@
+// escritorio.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/servicios/funciones.dart';
 import 'package:flutter_application_asistencia/src/temas/botones.dart';
 import 'package:flutter_application_asistencia/src/temas/piedepagina.dart';
 import 'package:flutter_application_asistencia/src/vistas/entrada.dart';
 import 'package:flutter_application_asistencia/src/vistas/login.dart';
-import 'package:flutter_application_asistencia/src/vistas/salida.dart'; 
+import 'package:flutter_application_asistencia/src/vistas/salida.dart';
+
 
 class escritorio extends StatelessWidget {
   final String nombreusuario;
 
   const escritorio({super.key, required this.nombreusuario});
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,32 +55,14 @@ class escritorio extends StatelessWidget {
                 final fecha = fechahora['fecha'] ?? '';
 
                 if (idusuario == null || fecha.isEmpty) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Error'),
-                      content: const Text('No se pudo obtener el ID de usuario o la fecha'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-                      ],
-                    ),
-                  );
+                  mensajeescritorio(context, 'Error', 'No se pudo obtener el ID de usuario o la fecha');
                   return;
                 }
 
                 final yatieneentrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
 
                 if (yatieneentrada) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Entrada ya registrada'),
-                      content: const Text('Ya has registrado tu entrada hoy.'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Aceptar')),
-                      ],
-                    ),
-                  );
+                  mensajeescritorio(context, 'Entrada ya registrada', 'Ya has registrado tu entrada hoy.');
                 } else {
                   Navigator.push(
                     context,
@@ -96,32 +79,14 @@ class escritorio extends StatelessWidget {
                 final fecha = fechahora['fecha'] ?? '';
 
                 if (idusuario == null || fecha.isEmpty) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Error'),
-                      content: const Text('No se pudo obtener el ID de usuario o la fecha'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-                      ],
-                    ),
-                  );
+                  mensajeescritorio(context, 'Error', 'No se pudo obtener el ID de usuario o la fecha');
                   return;
                 }
 
                 final tieneentrada = await consultarentrada(idusuario: idusuario, fecha: fecha);
 
                 if (!tieneentrada) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('No hay entrada registrada'),
-                      content: const Text('Primero debes registrar la entrada para poder registrar la salida.'),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Aceptar')),
-                      ],
-                    ),
-                  );
+                  msjescritorio(context, 'No hay entrada registrada', 'Primero debes registrar la entrada para poder registrar la salida.');
                 } else {
                   Navigator.push(
                     context,
@@ -136,7 +101,7 @@ class escritorio extends StatelessWidget {
                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Login()),
-                ); // Acción para salir de la app
+                );
               }),
             ],
           ),
@@ -146,4 +111,3 @@ class escritorio extends StatelessWidget {
     );
   }
 }
-

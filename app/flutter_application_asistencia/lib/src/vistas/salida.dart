@@ -99,6 +99,7 @@ class _SalidaState extends State<salida> {
                       bssidsalidadcontroller,
                       uuisalidacontroller,
                       actividadescontroller,
+                      widget.nombreusuario, 
                     );
                   }),
                   const SizedBox(height: 15),

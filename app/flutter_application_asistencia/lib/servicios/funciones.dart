@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_asistencia/config.dart';
+import 'package:flutter_application_asistencia/src/vistas/escritorio.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -151,6 +152,7 @@ void mostrarmensaje({
   required String titulo,
   required String mensaje,
   DialogType tipo = DialogType.info,
+  VoidCallback? onOkPress, // Callback para cuando se presiona "Aceptar"
 }) {
   AwesomeDialog(
     context: context,
@@ -160,12 +162,20 @@ void mostrarmensaje({
     desc: mensaje,
     btnOkText: "Aceptar",
     btnOkColor: const Color.fromRGBO(31, 206, 7, 0.658),
-    btnOkOnPress: () {},
+    btnOkOnPress: onOkPress ?? () {}, // Usar el callback proporcionado o una función vacía
     dismissOnTouchOutside: false,
   ).show();
 }
 
-Future<Object?> registrar(BuildContext context, dynamic fechacontroller, dynamic horacontroller, dynamic ipcontroller, dynamic bssidcontroller, dynamic uuidcontroller) async {
+Future<Object?> registrar(
+  BuildContext context,
+  dynamic fechacontroller,
+  dynamic horacontroller,
+  dynamic ipcontroller,
+  dynamic bssidcontroller,
+  dynamic uuidcontroller,
+  String nombreusuario, // Añade este parámetro para pasar el nombre de usuario
+) async {
   final idusuario = await obtenerusuarioid();
   if (idusuario == null) {
     mostrarmensaje(
@@ -187,11 +197,24 @@ Future<Object?> registrar(BuildContext context, dynamic fechacontroller, dynamic
   );
 
   if (exito != null) {
+    // Guardar el ID de asistencia en SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('idasistencia', exito);
+
     mostrarmensaje(
       context: context,
       titulo: "Éxito",
       mensaje: "Entrada registrada correctamente.",
       tipo: DialogType.success,
+      onOkPress: () {
+        // Redirigir al escritorio cuando se presiona "Aceptar"
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => escritorio(nombreusuario: nombreusuario),
+          ),
+        );
+      },
     );
   } else {
     mostrarmensaje(
@@ -205,16 +228,18 @@ Future<Object?> registrar(BuildContext context, dynamic fechacontroller, dynamic
   return exito;
 }
 
-//MENSAJE DE SALIDA\\
-Future<Object?> registrarsalidas(
-    BuildContext context,
-    dynamic fechasalidacontroller,
-    dynamic horasalidacontroller,
-    dynamic ipsalidacontroller,
-    dynamic bssidsalidadcontroller,
-    dynamic uuisalidacontroller,
-    TextEditingController actividadescontroller) async {
 
+// MENSAJE DE SALIDA
+Future<Object?> registrarsalidas(
+  BuildContext context,
+  TextEditingController fechasalidacontroller, // Usar TextEditingController en lugar de dynamic
+  TextEditingController horasalidacontroller,
+  TextEditingController ipsalidacontroller,
+  TextEditingController bssidsalidadcontroller,
+  TextEditingController uuisalidacontroller,
+  TextEditingController actividadescontroller,
+  String nombreusuario, // Añadir parámetro nombreusuario
+) async {
   final prefs = await SharedPreferences.getInstance();
   final idasistencia = prefs.getInt('idasistencia');
 
@@ -235,11 +260,12 @@ Future<Object?> registrarsalidas(
   final uuid = uuisalidacontroller.text;
   final actividades = actividadescontroller.text;
 
-  if (fecha.isEmpty || hora.isEmpty) {
+  // Validar campos obligatorios (ejemplo: actividades)
+  if (fecha.isEmpty || hora.isEmpty || actividades.isEmpty) {
     mostrarmensaje(
       context: context,
       titulo: "Error",
-      mensaje: "Datos de fecha u hora inválidos.",
+      mensaje: "Complete todos los campos obligatorios.",
       tipo: DialogType.error,
     );
     return false;
@@ -262,6 +288,14 @@ Future<Object?> registrarsalidas(
       titulo: "Éxito",
       mensaje: "Salida registrada correctamente.",
       tipo: DialogType.success,
+      onOkPress: () { // Navegar al escritorio
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => escritorio(nombreusuario: nombreusuario),
+          ),
+        );
+      },
     );
   } else {
     mostrarmensaje(
@@ -275,6 +309,27 @@ Future<Object?> registrarsalidas(
   return exito;
 }
 
+void mensajeescritorio(BuildContext context, String titulo, String mensaje) {
+  AwesomeDialog(
+    context: context,
+    dialogType: DialogType.error,
+    animType: AnimType.bottomSlide,
+    title: titulo,
+    desc: mensaje,
+    btnOkOnPress: () {},
+  ).show();
+}
+
+void msjescritorio(BuildContext context, String titulo, String mensaje) {
+  AwesomeDialog(
+    context: context,
+    dialogType: DialogType.info,
+    animType: AnimType.bottomSlide,
+    title: titulo,
+    desc: mensaje,
+    btnOkOnPress: () {},
+  ).show();
+}
 
 
 ///////////////////////////////

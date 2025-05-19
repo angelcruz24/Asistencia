@@ -88,20 +88,15 @@ class _EntradaState extends State<entrada> {
               child: Column(
                 children: [
                   Estilosbotones.btnsuccess("REGISTRAR ENTRADA", () async {
-                    Object? resultado = await registrar(
+                    await registrar(
                       context,
                       fechacontroller,
                       horacontroller,
                       ipcontroller,
                       bssidcontroller,
                       uuicontroller,
+                      widget.nombreusuario, // Pasa el nombre de usuario
                     );
-
-                    if (resultado != null && resultado is int) {
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.setInt('idasistencia', resultado);
-                      print('ID asistencia generado: $resultado');
-                    }
                   }),
                   const SizedBox(height: 15),
                   Estilosbotones.btndanger("REGRESAR", () {
