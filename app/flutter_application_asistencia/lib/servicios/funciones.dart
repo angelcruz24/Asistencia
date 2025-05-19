@@ -232,13 +232,13 @@ Future<Object?> registrar(
 // MENSAJE DE SALIDA
 Future<Object?> registrarsalidas(
   BuildContext context,
-  TextEditingController fechasalidacontroller, // Usar TextEditingController en lugar de dynamic
+  TextEditingController fechasalidacontroller, 
   TextEditingController horasalidacontroller,
   TextEditingController ipsalidacontroller,
   TextEditingController bssidsalidadcontroller,
   TextEditingController uuisalidacontroller,
   TextEditingController actividadescontroller,
-  String nombreusuario, // Añadir parámetro nombreusuario
+  String nombreusuario, 
 ) async {
   final prefs = await SharedPreferences.getInstance();
   final idasistencia = prefs.getInt('idasistencia');
@@ -260,7 +260,6 @@ Future<Object?> registrarsalidas(
   final uuid = uuisalidacontroller.text;
   final actividades = actividadescontroller.text;
 
-  // Validar campos obligatorios (ejemplo: actividades)
   if (fecha.isEmpty || hora.isEmpty || actividades.isEmpty) {
     mostrarmensaje(
       context: context,
@@ -309,6 +308,7 @@ Future<Object?> registrarsalidas(
   return exito;
 }
 
+//MENSAJE DEL ESCRITORIO\\
 void mensajeescritorio(BuildContext context, String titulo, String mensaje) {
   AwesomeDialog(
     context: context,
