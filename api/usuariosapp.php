@@ -1,8 +1,8 @@
 <?php
-header("Content-Type: application/json");
+header("Content-Type: application/json"); // Se indica que se responderá con formato JSON
 header("Access-Control-Allow-Origin: *");  // Permite solicitudes desde cualquier origen
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 
 // Si la solicitud es OPTIONS, solo responde con 200 (preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -10,19 +10,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once "conexion.php";
+require_once "conexion.php";  // Archivo con la conexión a la base de datos
 
-$accion = $_GET['accion'] ?? $_POST['accion'] ?? '';
+$accion = $_GET['accion'] ?? $_POST['accion'] ?? '';  // Acción enviada por GET o POST para que nuestros cases puedan ser manejados
 
 switch ($accion) {
-    case 'ping':
+    case 'ping':    // Caso ping para Verificar si la API está activa
         echo json_encode(['success' => true, 'message' => 'API en línea']);
         break;
 
     case 'login':
-        $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);    // Recibe y decodifica los datos JSON
 
-        // Verifica si el usuario y la clave están definidos
+        // Verifica si el usuario y la clave están definidos y que si se reciben
         if (isset($data['nombre']) && isset($data['clave'])) {
             $nombre = $conn->real_escape_string($data['nombre']);
             $clave = $conn->real_escape_string($data['clave']);
@@ -35,7 +35,7 @@ switch ($accion) {
             if ($result && $result->num_rows > 0) {
                 // Si hay coincidencia, devuelve un mensaje de éxito
                 $usuario = $result->fetch_assoc();
-                //agregar que devuelva el nombre tambien
+                // Agregan o devuelven el id y nombre
                 echo json_encode(['success' => true, 'message' => 'Credenciales correctas', 'id' => $usuario['id'], 'nombre' => $usuario['nombre']]);
             } else {
                 // Si no hay coincidencia, devuelve un mensaje de error
@@ -51,10 +51,12 @@ switch ($accion) {
 
     case 'fechahora':
         header('Content-Type: application/json');
-        //obtener la fecha y hora acutal del servidor. y regresarla como json para usarla en la app
-        date_default_timezone_set('America/Mexico_City'); 
+        // Obtener la fecha y hora acutal del servidor y regresarla como json para usarla en la app
+        date_default_timezone_set('America/Mexico_City');   // Zona horaria de México
+        // Obtener fecha y hora actual del servidor
         $fecha = date("Y-m-d");
         $hora = date("H:i:s");
+        // Obtener fecha y hora actual del servidor y regresa en formato JSON
         echo json_encode([
             'success' => true,
             'fecha' => $fecha,
@@ -63,53 +65,53 @@ switch ($accion) {
         break;
 
     case 'consultarentrada':
-        //buscamos en la db si y a hay una entrada registrada, si la hay se regresa el id
-        //$result = $conn->query("SELECT id FROM asistencialistado WHERE idusuario='$id' AND fechaentrada='$fecha'");
-        $data = json_decode(file_get_contents("php://input"), true);
-
+        // Buscamos en la db si y a hay una entrada registrada, si la hay se regresa el id
+        $data = json_decode(file_get_contents("php://input"), true);    // Recibe y decodifica los datos JSON
+        // Verificar que se recibió el ID del usuario y la fecha
         if (isset($data['idusuario']) && isset($data['fechaentrada'])) {
             $idusuario = $conn->real_escape_string($data['idusuario']);
             $fechaentrada = $conn->real_escape_string($data['fechaentrada']);
-
+            // Buscar entrada resgistrada en la tabla
             $sql = "SELECT id FROM asistencialistado WHERE idusuario='$idusuario' AND fechaentrada='$fechaentrada'";
-            $result = $conn->query($sql);
-
+            $result = $conn->query($sql);   // Ejecuta la consulta
+            // Si hay una entrada registrada
             if ($result && $result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                echo json_encode(['success' => true, 'id' => $row['id']]);
+                $row = $result->fetch_assoc();  // Obtiene el ID de la entrada
+                echo json_encode(['success' => true, 'id' => $row['id']]);  // Devuelve el ID de la entrada
             } else {
-                echo json_encode(['success' => false, 'message' => 'No hay entrada registrada']);
+                echo json_encode(['success' => false, 'message' => 'No hay entrada registrada']);   // No hay entrada
             }
         } else {
-            echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
+            echo json_encode(['success' => false, 'message' => 'Datos incompletos']);   // Faltan campos
         }
         break;
 
     case 'guardarentrada':
         //guardar en la db la entrada
-        //$result = $conn->query("INSERT INTO asistencia(usuario,fechaentrada,horaentrada y lo demas hasta uuidentrada) VALUES");
-        $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);    // Recibe y decodifica los datos JSON
+        // Verifica que se recibieron todos los campos requeridos
         if (
            isset($data['usuario'], $data['fechaentrada'], $data['horaentrada'], 
               $data['ipentrada'], $data['bssidentrada'], $data['uuidentrada'])
         ) {
+            // Se limpian los valores para prevenir inyecciones SQL
             $usuario = $conn->real_escape_string($data['usuario']);
             $ipentrada = $conn->real_escape_string($data['ipentrada']);
             $bssidentrada = $conn->real_escape_string($data['bssidentrada']);
             $uuidentrada = $conn->real_escape_string($data['uuidentrada']);
 
-            // Fecha y hora del servidor
+            // Fecha y hora actual del servidor
             $fechaentrada = date("Y-m-d");
             $horaentrada = date("H:i:s");
-
+            // Consulta para insertar la entrada en la base de datos
             $sql = "INSERT INTO asistencia (usuario, fechaentrada, horaentrada, ipentrada, bssidentrada, uuidentrada)
                     VALUES ('$usuario', '$fechaentrada', '$horaentrada', '$ipentrada', '$bssidentrada', '$uuidentrada')";
-
+            // Si la inserción fue exitosa
             if ($conn->query($sql)) {
-                $idasistencia = $conn->insert_id;
+                $idasistencia = $conn->insert_id;   // Se hace el registro correctamente y obtiene el ID de la nueva entrada
                 echo json_encode(['success' => true, 'message' => 'Entrada registrada correctamente', 'id' => $idasistencia]);
             } else {
-                http_response_code(500);
+                http_response_code(500);    // Error del servidor
                 echo json_encode(['success' => false, 'message' => 'Error al registrar entrada', 'error' => $conn->error]);
             }
         } else {
@@ -118,14 +120,15 @@ switch ($accion) {
         break;
 
     case 'guardarsalida':
-        //idasistencia=obtener el id que regresaconsultarentrada,
-        //result = $conn->query("UPDATE asistencia SET todos los valores de salida WHERE id='$idasistencia'");
-         $data = json_decode(file_get_contents("php://input"), true);
+        // Acción para registrar la salida (actualiza datos existentes)
+         $data = json_decode(file_get_contents("php://input"), true);   // Recibe y decodifica los datos JSON
+         // Verifica que todos los campos necesarios estén presentes
         if (
             isset($data['id']) && isset($data['fechasalida']) && isset($data['horasalida']) &&
             isset($data['ipsalida']) && isset($data['bssidsalida']) &&
             isset($data['uuidsalida']) && isset($data['actividades'])
         ) {
+            // Se limpian los valores para prevenir inyecciones SQL
             $id = $conn->real_escape_string($data['id']); // id de la fila en la tabla asistencia
             $fechasalida = $conn->real_escape_string($data['fechasalida']);
             $horasalida = $conn->real_escape_string($data['horasalida']);
@@ -143,58 +146,69 @@ switch ($accion) {
                         uuidsalida='$uuidsalida',
                         actividades='$actividades'
                     WHERE id='$id'";
-
+            // Si la actualización fue exitosa
             if ($conn->query($sql)) {
                 echo json_encode(['success' => true, 'message' => 'Salida registrada correctamente']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Error al registrar salida', 'error' => $conn->error]);
+                echo json_encode(['success' => false, 'message' => 'Error al registrar salida', 'error' => $conn->error]);  // Faltan campos
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Datos incompletos para registrar salida']);
         }
         break;
 
+    // Acción para obtener todos los usuarios
     case 'GET':
-        $result = $conn->query("SELECT * FROM usuariosapp");
-        $usuarios = [];
+        $result = $conn->query("SELECT * FROM usuariosapp");  // Consulta todos los registros
+        $usuarios = [];  // Inicializa arreglo de usuarios
         while ($row = $result->fetch_assoc()) {
-            $usuarios[] = $row;
+            $usuarios[] = $row;  // Agrega cada usuario al arreglo
         }
-        echo json_encode($usuarios);
+        echo json_encode($usuarios);  // Devuelve los usuarios en formato JSON
         break;
 
+    // Acción para actualizar un usuario
     case 'PUT':
-        $data = json_decode(file_get_contents("php://input"), true);
-        $id = intval($data['id']);
-        $nombre = $conn->real_escape_string($data['nombre']);
-        $clave = $conn->real_escape_string($data['clave']);
+        $data = json_decode(file_get_contents("php://input"), true);  // Lee datos JSON
+        $id = intval($data['id']);  // Convierte el ID a entero
+        $nombre = $conn->real_escape_string($data['nombre']);  // Escapa el nombre
+        $clave = $conn->real_escape_string($data['clave']);  // Escapa la clave
 
+        // Consulta para actualizar
         $sql = "UPDATE usuariosapp SET nombre='$nombre', clave='$clave' WHERE id=$id";
+
+        // Ejecuta y verifica si tuvo éxito
         if ($conn->query($sql)) {
             echo json_encode(['message' => 'Usuario actualizado']);
         } else {
-            http_response_code(500);
+            http_response_code(500);  // Error del servidor
             echo json_encode(['error' => $conn->error]);
         }
         break;
 
+    // Acción para eliminar un usuario
     case 'DELETE':
-        parse_str(file_get_contents("php://input"), $data);
-        $id = intval($data['id']);
+        parse_str(file_get_contents("php://input"), $data);  // Parsea datos enviados por DELETE
+        $id = intval($data['id']);  // Convierte el ID a entero
 
+        // Consulta para eliminar
         $sql = "DELETE FROM usuariosapp WHERE id=$id";
+
+        // Ejecuta y verifica si tuvo éxito
         if ($conn->query($sql)) {
             echo json_encode(['message' => 'Usuario eliminado']);
         } else {
-            http_response_code(500);
+            http_response_code(500);  // Error del servidor
             echo json_encode(['error' => $conn->error]);
         }
         break;
 
+    // Acción no reconocida
     default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
+        http_response_code(405);  // Método no permitido
+        echo json_encode(['error' => 'Método no permitido']);  // Devuelve mensaje de error
         break;
 }
 
+// Cierra la conexión con la base de datos
 $conn->close();
